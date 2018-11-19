@@ -1,0 +1,67 @@
+\documentclass[12pt,a4paper]{article}
+%\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage[left=1.2in,right=1.2in,top=1.5in,bottom=1.5in]{geometry} %导入页面边距宏
+\usepackage{fancyhdr} %导入页眉页脚宏
+\usepackage{lastpage} %引用页数信息
+\usepackage{setspace} %行间距
+\usepackage{graphicx} %插入图片
+\usepackage{amsmath} %数学公式处理 align环境
+\usepackage{tikz} %画图
+\usepackage{pgfplots} %画图用 axis环境
+\usepackage[T1]{fontenc} %用于处理下划线等输出
+\usepackage{textcomp} %\textasciitilde中划线 \textunderscore下划线
+\usepackage[pdfstartview=FitH,
+CJKbookmarks=true,
+bookmarksnumbered=true,
+bookmarksopen=true,
+colorlinks,
+pdfborder=001,
+linkcolor=blue,
+anchorcolor=blue,
+citecolor=blue,
+]{hyperref} %实现目录和章节的超链接
+\hypersetup{hidelinks}
+
+\pagestyle{fancy} %页面样式
+\lhead{Chdy} %左页眉
+%\chead{\begin{CJK}{UTF8}{gbsn}{\leftmark} \end{CJK}} %中间页眉
+\rhead{\begin{CJK}{UTF8}{gbsn}{\leftmark} \end{CJK}} %右页眉
+\rfoot{\thepage} 
+\cfoot{}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\author{Dy\footnote{837123564@qq.com}}
+\title{Latex}
+\date{\today}
+\maketitle
+\thispagestyle{empty} %去除因maketitle而产生的页码
+\newpage
+\tableofcontents
+
+\newpage
+MTU表示最大传输单元，由硬件规定，如以太网的MTU为1500字节。
+
+加上链路层的头部和FCS可以达到1518，由于有效链路层的数据帧最小需要64字节，所以ip数据报最小为46字节，MSS表示最大段大小
+
+MSS：maximum segment size，最大分节大小，为TCP数据包每次传输的最大数据分段大小，一般由发送端向对端TCP通知对端在每个分节中能发送的最大TCP数据。MSS值为MTU值减去IPv4 Header（20 Byte）和TCP header（20 Byte）得到。
+
+TCP中的头部长度字段的单位是4字节
+
+IP中的偏移量字段单位为8字节
+
+IP中的头部长度字段单位是4字节
+
+在建立连接时会告诉对方自己的接收窗口的大小，接收方收到信息后可以设置小于等于该值的发送窗口，并回应给发送方自己的接收窗口，使发送方设置合适的发送窗口
+
+当客户端发送syn数据包，会变为SYN\_SENT状态，当服务器接受到syn数据包后，返回一个syn数据包，此时服务器变为SYN\_RCVD状态，当客户端接受到服务器端发送的syn数据包后，会发送一个确认包给服务器端，此时客户端变为ESTABLISHED状态，当服务器接受到这个确认包后，服务器会变成ESTABLISHED状态
+
+想观察SYN\_SENT状态可以去尝试与一个不存在的ip地址建立连接
+
+想观察SYN\_RCVD状态可以去接受到一个不存在的ip地址发送过来的SYN请求
+
+\end{CJK}
+\end{document}

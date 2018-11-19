@@ -1,0 +1,82 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{//}
+\PYG{c+c1}{// Created by 邓岩 on 2018/11/3.}
+\PYG{c+c1}{//}
+
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}stdlib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}string.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}sys/stat.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}fcntl.h\PYGZgt{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{LCS\PYGZus{}PRINT}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{**} \PYG{n}{t}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{y}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{i}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{j}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{n} \PYG{o}{=} \PYG{n}{strlen}\PYG{p}{(}\PYG{n}{y}\PYG{p}{);}
+    \PYG{k+kt}{char} \PYG{p}{(}\PYG{o}{*}\PYG{n}{b}\PYG{p}{)[}\PYG{n}{n} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{t}\PYG{p}{;}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{i} \PYG{o}{==} \PYG{l+m+mi}{0} \PYG{o}{||} \PYG{n}{j} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{k}{return}\PYG{p}{;}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{b}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{}\PYGZbs{}\PYGZbs{}\PYGZsq{}}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{n}{LCS\PYGZus{}PRINT}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{);}
+        \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZpc{}c\PYGZdq{}}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{]);}
+    \PYG{p}{\PYGZcb{}} \PYG{k}{else} \PYG{k}{if} \PYG{p}{(}\PYG{n}{b}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{}|\PYGZsq{}}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{n}{LCS\PYGZus{}PRINT}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{j}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}} \PYG{k}{else} \PYG{p}{\PYGZob{}}
+        \PYG{n}{LCS\PYGZus{}PRINT}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{LCS\PYGZus{}LENGTH}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{x}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{y}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{len1} \PYG{o}{=} \PYG{n}{strlen}\PYG{p}{(}\PYG{n}{x}\PYG{p}{);}
+    \PYG{k+kt}{int} \PYG{n}{len2} \PYG{o}{=} \PYG{n}{strlen}\PYG{p}{(}\PYG{n}{y}\PYG{p}{);}
+    \PYG{k+kt}{char} \PYG{p}{(}\PYG{o}{*}\PYG{n}{b}\PYG{p}{)[}\PYG{n}{len2} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{calloc}\PYG{p}{((}\PYG{n}{len1} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{*} \PYG{p}{(}\PYG{n}{len2} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{),} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{char}\PYG{p}{));}
+    \PYG{k+kt}{int} \PYG{p}{(}\PYG{o}{*}\PYG{n}{c}\PYG{p}{)[}\PYG{n}{len2} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{calloc}\PYG{p}{((}\PYG{n}{len1} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{*} \PYG{p}{(}\PYG{n}{len2} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{),} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{int}\PYG{p}{));}
+    \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}=} \PYG{n}{len1}\PYG{p}{;} \PYG{o}{++}\PYG{n}{i}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}=} \PYG{n}{len2}\PYG{p}{;} \PYG{o}{++}\PYG{n}{j}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{k}{if} \PYG{p}{(}\PYG{o}{*}\PYG{p}{(}\PYG{n}{x} \PYG{o}{+} \PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{==} \PYG{o}{*}\PYG{p}{(}\PYG{n}{y} \PYG{o}{+} \PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+                \PYG{n}{c}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{c}\PYG{p}{[}\PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{][}\PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{;}
+                \PYG{n}{b}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{l+s+sc}{\PYGZsq{}\PYGZbs{}\PYGZbs{}\PYGZsq{}}\PYG{p}{;}
+            \PYG{p}{\PYGZcb{}} \PYG{k}{else} \PYG{k}{if} \PYG{p}{(}\PYG{n}{c}\PYG{p}{[}\PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}=} \PYG{n}{c}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{])} \PYG{p}{\PYGZob{}}
+            \PYG{c+c1}{//c[i][j]，c[i \PYGZhy{} 1][j]，c[i][j \PYGZhy{} 1]是相邻的，也就是说箭头指向有较大最大LCS的方向}
+                \PYG{n}{c}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{c}\PYG{p}{[}\PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{][}\PYG{n}{j}\PYG{p}{];}
+                \PYG{n}{b}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{l+s+sc}{\PYGZsq{}|\PYGZsq{}}\PYG{p}{;}
+            \PYG{p}{\PYGZcb{}} \PYG{k}{else} \PYG{p}{\PYGZob{}}
+                \PYG{n}{c}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{c}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{];}
+                \PYG{n}{b}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{l+s+sc}{\PYGZsq{}\PYGZhy{}\PYGZsq{}}\PYG{p}{;}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{c+cm}{/*for (int i = 0; i \PYGZlt{}= len1; ++i) \PYGZob{}}
+\PYG{c+cm}{        for (int j = 0; j \PYGZlt{}= len2; ++j) \PYGZob{}}
+\PYG{c+cm}{            printf(\PYGZdq{}\PYGZpc{}d \PYGZdq{}, c[i][j]);}
+\PYG{c+cm}{        \PYGZcb{}}
+\PYG{c+cm}{        for (int j = 0; j \PYGZlt{}= len2; ++j) \PYGZob{}}
+\PYG{c+cm}{            printf(\PYGZdq{}\PYGZpc{}c \PYGZdq{}, b[i][j]);}
+\PYG{c+cm}{        \PYGZcb{}}
+\PYG{c+cm}{        printf(\PYGZdq{}\PYGZbs{}n\PYGZdq{});}
+\PYG{c+cm}{    \PYGZcb{}*/}
+    \PYG{n}{LCS\PYGZus{}PRINT}\PYG{p}{(}\PYG{n}{b}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{len1}\PYG{p}{,} \PYG{n}{len2}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{main}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{file1} \PYG{o}{=} \PYG{l+s}{\PYGZdq{}/Users/dengyan/exam.c\PYGZdq{}}\PYG{p}{;}
+    \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{file2} \PYG{o}{=} \PYG{l+s}{\PYGZdq{}/Users/dengyan/exam\PYGZdq{}}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{stat} \PYG{n}{stat1}\PYG{p}{;}
+    \PYG{n}{stat}\PYG{p}{(}\PYG{n}{file1}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{stat1}\PYG{p}{);}
+    \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{x} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{);}
+    \PYG{k+kt}{int} \PYG{n}{fdx} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{file1}\PYG{p}{,} \PYG{n}{O\PYGZus{}RDONLY}\PYG{p}{);}
+    \PYG{n}{read}\PYG{p}{(}\PYG{n}{fdx}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size}\PYG{p}{);}
+    \PYG{n}{x}\PYG{p}{[}\PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+    \PYG{n}{stat}\PYG{p}{(}\PYG{n}{file2}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{stat1}\PYG{p}{);}
+    \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{y} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{malloc}\PYG{p}{(}\PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{);}
+    \PYG{k+kt}{int} \PYG{n}{fdy} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{file2}\PYG{p}{,} \PYG{n}{O\PYGZus{}RDONLY}\PYG{p}{);}
+    \PYG{n}{read}\PYG{p}{(}\PYG{n}{fdy}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size}\PYG{p}{);}
+    \PYG{n}{y}\PYG{p}{[}\PYG{n}{stat1}\PYG{p}{.}\PYG{n}{st\PYGZus{}size}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+    \PYG{c+c1}{//char x[100] = \PYGZdq{}ABCBDAB\PYGZdq{};}
+    \PYG{c+c1}{//char y[100] = \PYGZdq{}BDCABA\PYGZdq{};}
+    \PYG{n}{LCS\PYGZus{}LENGTH}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

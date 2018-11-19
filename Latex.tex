@@ -1,0 +1,70 @@
+\documentclass[10pt,a4paper]{article}
+%\usepackage{ctex}
+\usepackage{CJK}
+\usepackage{color}
+\usepackage[left=1.2in,right=1.2in,top=1.5in,bottom=1.5in]{geometry} %导入页面边距宏
+\usepackage{fancyhdr} %导入页眉页脚宏
+\usepackage{lastpage} %引用页数信息
+\usepackage{setspace} %行间距
+\usepackage{graphicx} %插入图片
+\usepackage{amsmath} %数学公式处理 align环境
+\usepackage{tikz} %画图
+\usepackage{pgfplots} %画图用 axis环境
+\usepackage[pdfstartview=FitH,
+CJKbookmarks=true,
+bookmarksnumbered=true,
+bookmarksopen=true,
+colorlinks,
+pdfborder=001,
+linkcolor=blue,
+anchorcolor=blue,
+citecolor=blue,
+]{hyperref} %实现目录和章节的超链接
+\hypersetup{hidelinks}
+
+\pagestyle{fancy} %页面样式
+\lhead{Chdy} %左页眉
+%\chead{\begin{CJK}{UTF8}{gbsn}{\leftmark} \end{CJK}} %中间页眉
+\rhead{\begin{CJK}{UTF8}{gbsn}{\leftmark} \end{CJK}} %右页眉
+\rfoot{\thepage} 
+\cfoot{}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\author{Dy\footnote{837123564@qq.com}}
+\title{Latex}
+\date{\today}
+\maketitle
+\thispagestyle{empty} %去除因maketitle而产生的页码
+\newpage
+\tableofcontents
+
+\newpage
+\input{sections/charpter-1}
+\input{sections/charpter-2}
+
+\section{\color[rgb]{0.2,0.4,0.6}{画图}}
+\subsection{坐标轴}
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+	\begin{axis}[width=270pt,height=200pt,
+	xmin=0,xmax=8,ymin=0,ymax=12,
+	xlabel={x},ylabel={y}]
+		\addplot[color=red,mark=*] table{
+		x y
+		2 1.2
+		3 3.5
+		4 2.6
+		5 7.8
+		6 9.5
+		7 2
+		};
+	\end{axis}
+\end{tikzpicture}
+\caption{坐标轴}
+\end{figure}
+
+\end{CJK}
+\end{document}

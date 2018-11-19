@@ -1,0 +1,4720 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{CJK}
+\usepackage{fancyhdr}
+\usepackage[left=1.2in,right=1.2in,top=1in,bottom=1.5in]{geometry}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{setspace} %行间距
+\usepackage{listings}
+\usepackage[CJKbookmarks=true]{hyperref} %实现目录和章节的超链接
+\usepackage{lmodern} %下行的使用需要这行
+\usepackage[T1]{fontenc} %用于处理下划线等输出
+\usepackage{textcomp} %\textasciitilde中划线 \textunderscore下划线
+
+
+ \lstset{
+      %行号
+      numbers=left,
+      %背景框
+      framexleftmargin=10mm,
+      frame=none,
+     %背景色
+     %backgroundcolor=\color[rgb]{1,1,0.76},
+     %backgroundcolor=\color[RGB]{245,245,244},
+     %样式
+     keywordstyle=\bf\color[RGB]{0,0,128},
+     identifierstyle=\bf,
+     numberstyle=\color[gray]{0.2},
+     commentstyle=\color[gray]{0.1},
+     stringstyle=\rmfamily\slshape\color[RGB]{0,128,0},
+     %显示空格
+     showstringspaces=false
+}
+
+
+\pagestyle{fancy}
+\cfoot{}
+\rhead{} %不设这个会报错
+\lhead{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+\title{Linux}
+\author{Dy}
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{\color[rgb]{0.2,0.4,0.6}{第一章 IO流}}
+
+\subsection{open}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+int open(const char *path, int flag, ...)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\begin{table}[!htb]
+	\begin{tabular}{l|l}
+		O\_RDONLY & 只读 \\
+		O\_WRONLY & 只写 \\
+		O\_RDWR & 1 \\
+		O\_APPEND & 2 \\
+		O\_CLOEXEC & 3 \\
+		O\_CREAT & 4 \\
+		O\_DIRECTORY & 5 \\
+	\end{tabular}
+\end{table}
+\end{spacing}
+
+\subsection{openat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+int openat(int fd, const char *path, int oflag, ...);
+\end{lstlisting}
+{\large{fd:}} {\it fd指向filename的目录，或者等于AT\_FDCWD，则fd等同于进程当前工作目录fd}  \\
+{\large{flag:}}
+\begin{table}[!htb]
+	\begin{tabular}{l|l}
+		O\_RDONLY & 只读 \\
+		O\_WRONLY & 只写 \\
+		O\_RDWR & 1 \\
+		O\_APPEND & 2 \\
+		O\_CLOEXEC & 3 \\
+		O\_CREAT & 4 \\
+		O\_DIRECTORY & 5 \\
+	\end{tabular}
+\end{table}
+\end{spacing}
+
+\subsection{fcntl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fcntl(int fd,F_SETFL,flags|O_ASYNC)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{int fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{F\_SETFL:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags|O\_ASYNC:}}
+\paragraph{ \ \ }设置信号IO，通过fcntl(fd,F\_SETOWN,pid)设置接收SIGIO的进程，不能对终端设备使用
+\end{spacing}
+
+
+\subsection{open}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+open(const char *path, int flag, int mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }; flag = O\_RDONLY|O\_WRONLY|O\_RDWR|O\_APPEND|O\_CLOEXEC|O\_CREAT|O\_DIRECTORY|O\_EXCL|O\_NOCTTY|O\_NOFOLLOW|O\_NONBLOCK|O\_SYNC|O\_TRUNC|O\_DSYNC|O\_FSYNC
+\end{spacing}
+
+\subsection{openat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+openat(fd|-1,filename|pathname,flags,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd|-1:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{filename|pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }fd指向filename的目录，或者等于AT\_FDCWD，则fd等同于进程当前工作目录fd
+\end{spacing}
+
+\subsection{close}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+close(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }只是进程文件描述符中对应的记录，并将fd所对应的全局文件打开表表项中的标记减一，当标记为0是文件关闭
+\end{spacing}
+
+\subsection{read}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+read(fd,buf,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }文件空洞是可以读的，只不过读到的数据是0，对于一般的文本文件读取，如果文件为空会返回0，而对于一般的慢速设备比如socket，如果当前socket缓冲区内无数据，则会阻塞，如果设置为非阻塞模式，当无数据时，则会返回-1，并且将错误码设置为EAGAIN，如果另一段已经关闭，则返回0，read会读取换行符
+\end{spacing}
+
+\subsection{aio\_read}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+aio\_read(aiocb *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{write}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+write(fd,buf,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }可以对文件写大量的0，并且会占用空间，而如果是偏移后写数据，中间的空洞不会占据空间(视系统而定，mac占用)，但是如果复制这个文件，复制的空洞部分会被0填充，因为read函数读取空洞部分读出的数据是0，利用文件空洞可以实现多线程下载
+\end{spacing}
+
+\subsection{lseek}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lseek(fd,offset,position)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{position:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fcntl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fcntl(fd,cmd,attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }cmd = F\_GETFL|F\_SETFL|F\_GETFD|F\_SETFD|F\_DUPFD|F\_F\_DUPFD\_CLOEXEC|F\_GETOWN|F\_SETOWN F\_SETFD是设置文件描述符标志(进程文件描述符表中,FD\_CLOEXEC标志)，F\_SETFL是设置文件状态标志(全局文件打开表中，可设置O\_NONBLOCK)，F\_DUPDF是复制文件描述符但不会复制F\_CLOEXEC标志，F\_DUPDF\_CLOEXEC则会设置F\_CLOEXEC
+\end{spacing}
+
+\subsection{dup2}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+dup2(oldfd,newfd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{oldfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{newfd:}}
+\paragraph{ \ \ }复制oldfd到newfd，如果newfd以及被占用，则会先用close关闭它，复制后文件描述符设置的close-on-exec位会消失
+\end{spacing}
+
+\subsection{pread}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pread(fd,buf,len,offset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}}
+\paragraph{ \ \ }从fd的第offset的偏移量处读取len个字节的数据到buf，不更新当前的文件偏移量，在多线程环境下有很大的作用
+\end{spacing}
+
+\subsection{pwrite}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pwrite(fd,buf,len,offset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}}
+\paragraph{ \ \ }从fd的第offset的偏移量处写入buf的前len个字节的数据，不更新当前的文件偏移量，在多线程环境下有很大的作用
+\end{spacing}
+
+\subsection{readv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+readv(int fd,struct iovec *,int len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }iovec{void * iov\_base,size\_t iov\_len} iov\_base指向缓冲区，iov\_len表示缓冲区大小，iovec * 指向一个数组结构，len表示数组长度，散布读，从fd读取数据，按iovec数组下标从小到大读取数据到数组元素中所指向的缓冲区中，也就是说如果iovec[0]指向的缓冲区装满后，然后存入iovec[1]指向的缓冲区
+\end{spacing}
+
+\subsection{writev}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+writev(int fd,struct iovec *,int len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }聚集写，向fd写数据，按iovec数组下标从小到大写缓冲区的iov\_len个数据到fd中，也就是说如果iovec[0]指向的缓冲区写到fd后，然后写入iovec[1]指向的缓冲区，如果自己要设置某种信息协议，比如发送的数据以某特定数据开头，特定数据结尾，则此时可以设置三个iovec，分别用于头部数据，中间数据，尾部数据
+\end{spacing}
+
+\subsection{truncate}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+truncate(path,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }如果len大于文件大小，则会形成文件空洞
+\end{spacing}
+
+\subsection{ftruncate}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ftruncate(fd,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }可用于增大文件大小，然后用memcpy复制mmap的数据
+\end{spacing}
+
+\subsection{mkstemp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mkstemp(buf[] = "nameXXXXXX")
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"nameXXXXXX":}}
+\paragraph{ \ \ }不能传递静态分配的参数，程序结束后不会自动删除该文件
+\end{spacing}
+
+\subsection{mkdtemp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mkdtemp(buf[] = "nameXXXXXX")
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"nameXXXXXX":}}
+\paragraph{ \ \ }创建的是目录
+\end{spacing}
+
+\subsection{tmpfile}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tmpfile(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }返回创建的临时文件的流指针
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{第二章 环境}}
+\subsection{getenv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getenv("name")
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"name":}}
+\paragraph{ \ \ }返回真实地址，不是拷贝
+\end{spacing}
+
+\subsection{putenv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+putenv("name=value")
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"name=value":}}
+\paragraph{ \ \ }参数为真实的环境变量，不是副本，如果采用char []保存字符串，则可以通过该指针进行后续更改，如使用静态分配，则不可更改
+\end{spacing}
+
+\subsection{setenv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setenv("name","value",overwrite)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"name":}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{"value":}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{overwrite:}}
+\paragraph{ \ \ }overwrite = TRUE|FALSE 等于true则覆盖，否则不覆盖
+\end{spacing}
+
+\subsection{unsetenv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+unsetenv("name")
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{"name":}}
+\paragraph{ \ \ }删除环境变量
+\end{spacing}
+
+\subsection{clearenv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clearenv(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{任意跳转}}
+\subsection{setjmp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setjmp(jum\_buf)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{jum\_buf:}}
+\paragraph{ \ \ }参数应该为全局变量，第一次调用返回0，第二次调用会返回longjmp里的val参数
+\end{spacing}
+
+\subsection{longjmp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+longjmp(jum\_buf,val)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{jum\_buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{val:}}
+\paragraph{ \ \ }调用时会跳转到setjmp函数处，不会回滚全局变量和自动变量的值，如果值保存在寄存器中，则值最后会回滚到调用第一次setjmp时的值，如果不想其回滚，则设置修饰符volatile
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{堆操作}}
+\subsection{brk}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+brk(void * position)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{position:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sbrk}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sbrk(size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{brk}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+brk(void *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{malloc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+malloc(size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{calloc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+calloc(num,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{num:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{realloc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+realloc(ptr,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{ptr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{memalign}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+memalign(boundary,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{boundary:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{alloc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+alloc(size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{系统用户文件处理}}
+\subsection{getpwnam}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpwnam(name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }返回passwd *，获取/etc/passwd中匹配name的信息
+\end{spacing}
+
+\subsection{getpwuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpwuid(uid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}}
+\paragraph{ \ \ }通过uid进行匹配
+\end{spacing}
+
+\subsection{getgrnam}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getgrnam(name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }返回group *，获取/etc/group中匹配name的信息
+\end{spacing}
+
+\subsection{getgrgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getgrgid(uid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}}
+\paragraph{ \ \ }通过uid进行匹配
+\end{spacing}
+
+\subsection{getpwent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpwent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }遍历/etc/passwd，每次调用后会指向下一条记录，会在第一次调用的时候打开/etc/passwd文件
+\end{spacing}
+
+\subsection{setpwent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setpwent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }从初始处开始遍历，即重置指针，或者说将偏移量设为0
+\end{spacing}
+
+\subsection{endpwent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endpwent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }关闭打开的/etc/passwd文件
+\end{spacing}
+
+\subsection{endgrent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endgrent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }遍历/etc/group，每次调用后会指向下一条记录，会在第一次调用的时候打开/etc/group文件
+\end{spacing}
+
+\subsection{setgrent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setgrent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }从初始处开始遍历，即重置指针，或者说将偏移量设为0
+\end{spacing}
+
+\subsection{getgrent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getgrent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }关闭打开的/etc/group文件
+\end{spacing}
+
+\subsection{getspname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getspname(name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getspend}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getspend(name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{setspent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setspent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{endspent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endspent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{crypt}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+crypt(pass,salt)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pass:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{salt:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{进程用户信息}}
+\subsection{getlogin}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getlogin()
+\end{lstlisting}
+\paragraph{ \ \ }返回登陆名，可以用getpwuid(getuid())得到，不过如果一个用户有多个登录名(多用登录名对应一个uid)，则可能不会得到想要的结果
+\end{spacing}
+
+\subsection{getuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getuid()
+\end{lstlisting}
+\paragraph{ \ \ }返回实际用户id
+\end{spacing}
+
+\subsection{geteuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+geteuid()
+\end{lstlisting}
+\paragraph{ \ \ }返回有效用户id
+\end{spacing}
+
+\subsection{getgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getgid()
+\end{lstlisting}
+\paragraph{ \ \ }返回实际组id
+\end{spacing}
+
+\subsection{getegid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getegid()
+\end{lstlisting}
+\paragraph{ \ \ }返回有效组id
+\end{spacing}
+
+\subsection{setuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setuid(uid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}}
+\paragraph{ \ \ }如果进程拥有特权进程权限，则可以将实际用户id，有效用户id和保存的设置用户id改为uid，如果非特权进程，而uid等于实际用户id或者保存的设置用户id，则可以将有效id也改为uid，比如某些设置了set-user-id为root的程序，当进程运行后，有效id为root，保存的设置用户id也为root，如果不进行某些操作，这个程序会一直以特权进程运行，此时可以用setuid(getuid())将有效用户先设为实际用户id，以用户权限运行，等到运行需要某些特权的命令时再用setuid(程序刚运行时geteuid()的有效用户id)，调用完命令后再将有效用户id恢复，保证最小权限原则
+\end{spacing}
+
+\subsection{setgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setgid(uid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{seteuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+seteuid(euid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{euid:}}
+\paragraph{ \ \ }如果是特权进程，只更改有效用户id为uid，非特权进程可以将有效用户id改为实际用户id或保存的设置用户id
+\end{spacing}
+
+\subsection{setegid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setegid(egid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{egid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{setreuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setreuid(uid,euid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{euid:}}
+\paragraph{ \ \ }如果是特权进程，将实际用户id设置为uid，有效用户id和保存的设置用户id设置为euid，参数取-1对应id可保存不变
+\end{spacing}
+
+\subsection{setregid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setregid(gid,egid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{egid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getresuid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getresuid(&uid,&euid,&suid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{\&uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&euid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&suid:}}
+\paragraph{ \ \ }mac上无法使用
+\end{spacing}
+
+\subsection{getresgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getresgid(&uid,&euid,&suid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{\&uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&euid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&suid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{setfsuit}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setfsuit(fsuid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fsuid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{setfsgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setfsgid(fsgid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fsgid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getgroups}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getgroups(size,gid\_t [])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[]:}}
+\paragraph{ \ \ }将调用进程所属用户的各附属组id写入到数组中，最多写入size个附属组id
+\end{spacing}
+
+\subsection{setgroups}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setgroups(size,gid\_t [])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[]:}}
+\paragraph{ \ \ }为调用进程设置附属组id
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{时间}}
+\subsection{gettimeofday}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gettimeofday(timeval *,NULL)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{NULL:}}
+\paragraph{ \ \ }与time()功能相似，但是精度更高，timeval.tv\_sec和time()的返回值相同，而timeval.tv\_nsec提供微秒级精度
+\end{spacing}
+
+\subsection{time}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+time(time\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }返回自epoch到现在GMT时间的秒数
+\end{spacing}
+
+\subsection{ctime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ctime(time\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将日历时间(time\_t)转换成人们可读取的时间日期字符串，会进行本地化处理
+\end{spacing}
+
+\subsection{gmtime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gmtime(time\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将日历时间转换成分解的时间结构tm，以格林时间GMT为标准，返回值为指针类型，说明该函数是不可重入的，tm{tm\_sec(0-60),tm\_min(0-59),tm\_hour(0-23),tm\_mday(1-31),tm\_mon(0-11),tm\_year(>= 1900),tm\_wday(0-6),tm\_yday(0-365),tm\_isdst(夏令时标志)}
+\end{spacing}
+
+\subsection{localtime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+localtime(time\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将日历时间转换成分解的时间结构tm，以本地时间为标准，所以会在对日历时间处理时考虑本地时区和夏令时标志
+\end{spacing}
+
+\subsection{mktime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mktime(tm *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将tm结构中的年月日为参数，转化为time\_t值
+\end{spacing}
+
+\subsection{asctime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+asctime(tm *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将tm转换成人们可读取的时间日期字符串，不会进行本地化处理，所以可用localtime()的返回值作为参数
+\end{spacing}
+
+\subsection{strftime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+strftime(buf,len,format,tm *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{format:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将tm格式化输出
+\end{spacing}
+
+\subsection{strptime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+strptime(buf,format,tm *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{format:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }strftime的逆函数，将buf中的字符串根据format转换成相应的tm结构
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{进程优先级}}
+\subsection{nice}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+nice(incr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{incr:}}
+\paragraph{ \ \ }将insr参数增加到进程的nice值上，nice值越小，优先级越高
+\end{spacing}
+
+\subsection{getpriority}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpriority(which,who)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{who:}}
+\paragraph{ \ \ }which = PRIO\_PROCESS|PRIO\_PGRP|PRIO\_USER 分别表示进程，进程组，用户，如果who为0，则表示调用进程的相应which
+\end{spacing}
+
+\subsection{setpriority}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setpriority(which,who)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{who:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{times}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+times(struct tms *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }tms{tms\_utime,tms\_stime,tms\_cutime,tms\_cstime} 分别为用户CPU时间，系统CPU时间，子进程中执行的用户CPU时间，子进程中执行的系统CPU时间，获取各值应该需要调用两次times，用两个tms结构体中对应的各个数相减可得到，可用两次times的返回值相减获取进程实际生存时间，单位为clock\_t，可除以\_SC\_CLK\_TCK的值获取实际秒数
+\end{spacing}
+
+\subsection{clock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clock(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{系统信息}}
+\subsection{sysconf}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sysconf(name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }获取运行时的系统限制值，与文件和目录无关 name = \_SC\_* \_SC\_CLK\_TCK为每秒滴答数，可用于转换clock\_t(times返回值)
+\end{spacing}
+
+\subsection{pathconf}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pathconf(path,name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }获取运行时的系统限制值，与文件和目录有关 name = \_PC\_*
+\end{spacing}
+
+\subsection{fpathconf}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fpathconf(fd,name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }获取运行时的系统限制值，与文件和目录有关 name = \_PC\_*
+\end{spacing}
+
+\subsection{uname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+uname(utsname *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }返回主机和操作系统的相关信息
+\end{spacing}
+
+\subsection{gethostname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gethostname(name,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }返回主机名，等于在终端运行hostname
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{IO缓冲区设置}}
+\subsection{setvbuf}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setvbuf(FILE *,buf,mode,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }mode = \_IOFBF|\_IOLBF|\_IONBF 分别为全缓冲，行缓冲和不带缓冲
+\end{spacing}
+
+\subsection{setbuf}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setbuf(FILE *,buf)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}}
+\paragraph{ \ \ }可以用来打开和关闭标准io缓冲，默认是全缓冲模式
+\end{spacing}
+
+\subsection{setbuffer}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setbuffer(FILE *,buf,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{磁盘同步}}
+\subsection{sync}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sync(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }将修改过的块缓冲区排入写队列，并不等待数据写会磁盘
+\end{spacing}
+
+\subsection{fsync}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fsync(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }将fd所指文件中被修改过的块缓冲区和被修改过的文件属性写入磁盘，等待写入完成后返回
+\end{spacing}
+
+\subsection{fdatasync}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fdatasync(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }将fd所指文件中被修改过的块缓冲区写入磁盘，等待写入完成后返回
+\end{spacing}
+
+\subsection{posix\_fadvise}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+posix\_fadvise(fd,offset,len,advice)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{advice:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{文件IO}}
+\subsection{fopen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fopen(FILE *,pathname,type)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}}
+\paragraph{ \ \ }type = "r+w+a"
+\end{spacing}
+
+\subsection{freopen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+freopen(pathname,type,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }在一个指定的流上打开一个指定的文件
+\end{spacing}
+
+\subsection{fmemopen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fmemopen(buf,size,type)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}}
+\paragraph{ \ \ }内存流，返回一个文件指针指向这个buf缓冲区，标准io对文件的操作实际上是对磁盘中数据的操作，而这个并不绑定实际的文件，可将buf视为一个文件
+\end{spacing}
+
+\subsection{fileno}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fileno(FIEL *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fdopen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fdopen(fd,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }为fd返回一个流标识符
+\end{spacing}
+
+\subsection{fclose}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fclose(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }关闭一个打开流，关闭之前冲刷缓冲区的数据
+\end{spacing}
+
+\subsection{getc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getc(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fgetc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fgetc(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getchar}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getchar(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }等同于getc(stdin)
+\end{spacing}
+
+\subsection{ungetc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ungetc(char,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{char:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将字符压送回流的最前端
+\end{spacing}
+
+\subsection{putc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+putc(char,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{char:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fputc}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fputc(char,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{char:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{putchar}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+putchar(char)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{char:}}
+\paragraph{ \ \ }等同于putc(char,stdout)
+\end{spacing}
+
+\subsection{fgets}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fgets(buf,size,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }一次读取一行数据
+\end{spacing}
+
+\subsection{gets}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gets(buf)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}}
+\paragraph{ \ \ }已经废弃，从标志输入读取并且会在尾部删除换行符
+\end{spacing}
+
+\subsection{fputs}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fputs(buf,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将buf中的数据写到指定的流中，数据要以null字符结尾，但是不会向流写入空字符
+\end{spacing}
+
+\subsection{puts}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+puts(buf)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}}
+\paragraph{ \ \ }将buf中的数据写到标准输出，并追加一个换行符
+\end{spacing}
+
+\subsection{fread}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fread(addr,size,num,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{num:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fwrite}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fwrite(addr,size,num,FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{num:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将地址addr开始的num个size大小的数据写入FILE *流，可用mmap(NULL,40,PROT\_READ|PROT\_WRITE,MAP\_SHARED,fd,0) 加上memcpy实现针对fd的版本
+\end{spacing}
+
+\subsection{ftell}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ftell(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }返回当前偏移量
+\end{spacing}
+
+\subsection{fseek}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fseek(fd,offset,whence)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{whence:}}
+\paragraph{ \ \ }whence = SEEK\_SET|SEEK\_CUR|SEEK\_END 改变当前偏移量
+\end{spacing}
+
+\subsection{ferror}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ferror(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{feof}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+feof(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }检测是否已读到文件结尾
+\end{spacing}
+
+\subsection{clearerr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clearerr(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }消除FILE中的两个错误标志
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{文件系统挂载}}
+\subsection{mount}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mount(path,target)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{target:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{umount}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+umount(target)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{target:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{umount2}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+umount2(target,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{target:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{文件信息}}
+\subsection{stat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+stat(path,stat *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }检查文件属性，类型，大小，链接数，用户id，组id，最后修改时间，最后访问时间，inode号，占用字节块数量(这里的字节块大小在mac上是512字节，因为一个数据块大小是4K(根据文件系统决定)，所以一个一字节的文件也会占用8个字节块)
+\end{spacing}
+
+\subsection{lstat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lstat(path,stat *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }//不会对符号链接解引用
+\end{spacing}
+
+\subsection{fstat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fstat(fd,stat * )
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fstatat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fstatat(fd|-1,filename|pathname,stat *,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd|-1:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{filename|pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }如果flags = AT\_SYMLINK\_NOFOLLOW，等同于lstat，如果fd = AT\_FDCWD，并且filename是相对路径名，则fd等同于进程当前工作目录fd
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{文件时间属性更改}}
+\subsection{utime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+utime(path,utimbuf *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{utimes}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+utimes(path,timeval [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }更改访问时间(st\_atim)和修改时间(st\_mtim), 不能改变st.ctim，因为调用这个函数时，该字段就会自动更新
+\end{spacing}
+
+\subsection{futimes}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+futimes(fd,timeval [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{lutimes}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lutimes(path,timeval [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }不会对符号链接解引用
+\end{spacing}
+
+\subsection{utimensat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+utimensat(dirfd,path,timespec [2],flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{dirfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{futimens}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+futimens(fd,timespec [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{文件权限及所有者}}
+\subsection{chown}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+chown(pathname,uid,gid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}}
+\paragraph{ \ \ }如果uid或者gid中的任意一个参数是-1，则对应的id不变
+\end{spacing}
+
+\subsection{fchown}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fchown(pathfd,uid,gid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{lchown}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lchown(pathname,uid,gid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fchownat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fchownat(fd|-1,filename|pathname,uid,gid,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd|-1:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{filename|pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{uid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = AT\_SYMLINK\_NOFOLLOW 设置该标签不会解引用，也就是直接改变符号链接的uid和gid
+\end{spacing}
+
+\subsection{chmod}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+chmod(pathname,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }会对符号链接解引用
+\end{spacing}
+
+\subsection{fchmod}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fchmod(fd,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fchmodat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fchmodat(fd|-1,filename|pathname,mode,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd|-1:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{filename|pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flsgs = AT\_SYMLINK\_NOFOLLOW 设置该标签不会解引用符号链接
+\end{spacing}
+
+\subsection{access}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+access(path,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }mode = F\_OK|R\_OK|W\_OK|X\_OK 以实际用户id和实际组id检测访问权限，四个选项分别为是否存在，是否有读权限，写权限，执行权限，会对符号链接解引用，使用faccessat并设置AT\_SYMLINK\_NOFOLLOW也无效
+\end{spacing}
+
+\subsection{faccessat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+faccessat(fd,filename,mode,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{filename:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = AT\_EACCESS 如果设置这个标志则使用有效用户id和有效组id检测访问权限
+\end{spacing}
+
+\subsection{setxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setxattr(path,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }//只能在linux下使用，下同
+\end{spacing}
+
+\subsection{lsetxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lsetxattr(path,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fsetxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fsetxattr(fd,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getxattr(path,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }//只能在linux下使用，下同
+\end{spacing}
+
+\subsection{lgetxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lgetxattr(path,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fgetxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fgetxattr(fd,name,value,size,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{removexatte}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+removexatte(path,name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{lremovexatte}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+lremovexatte(path,name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{fremovexatte}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fremovexatte(fd,name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{listxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+listxattr(path,list,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{list:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{llistxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+llistxattr(path,list,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{list:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{flistxattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+flistxattr(fd,list,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{list:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{硬链接与软链接}}
+\subsection{link}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+link(oldpath,newpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{oldpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{newpath:}}
+\paragraph{ \ \ }等同于ln -n oldpath newpath 该函数会解引用符号链接
+\end{spacing}
+
+\subsection{linkat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+linkat(ofd,oldpath,efd,newpath,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{ofd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{oldpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{efd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{newpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = AT\_SYMLINK\_FOLLOW 如果设置会对符号链接解引用，不设置会对软链接直接失败
+\end{spacing}
+
+\subsection{unlink}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+unlink(path)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}}
+\paragraph{ \ \ }如果path是符号链接，则直接对符号链接起作用
+\end{spacing}
+
+\subsection{unlinkat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+unlinkat(fd,path,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = AT\_REMOVEDIR 设置该标签可以对目录进行操作
+\end{spacing}
+
+\subsection{rename}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+rename(oldpath,newpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{oldpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{newpath:}}
+\paragraph{ \ \ }不对符号链接解引用
+\end{spacing}
+
+\subsection{renameat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+renameat(ofd,oldpath,nfd,newpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{ofd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{oldpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{nfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{newpath:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{symlink}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+symlink(filepath,linkpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{filepath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{linkpath:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{symlinkat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+symlinkat(filepath,fd,linkpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{filepath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{linkpath:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{readlink}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+readlink(path,buf,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{path:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }直接读符号链接文件的数据，buf中返回的符号链接内容不以null字符结尾
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{目录操作}}
+\subsection{mkdir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mkdir(pathname,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{mkdirat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mkdirat(fd,pathname,,pde)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pde:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{rmdir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+rmdir(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{remove}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+remove(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }//需要为绝对地址
+\end{spacing}
+
+\subsection{opendir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+opendir(dirpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{dirpath:}}
+\paragraph{ \ \ }//返回DIR *
+\end{spacing}
+
+\subsection{fdopendir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fdopendir(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{readdir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+readdir(DIR *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }//返回dirent *
+\end{spacing}
+
+\subsection{rewinddir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+rewinddir(DIR *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{closedir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+closedir(DIR *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{dirfd}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+dirfd(DIR *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{nftw}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+nftw(dirpath,function,num\_of\_fd,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{dirpath:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{function:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{num\_of\_fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }int funciton(pathname,stat*,typeflag,FTW *)
+\end{spacing}
+
+\subsection{getcwd}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getcwd(buf,size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{chdir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+chdir(newpath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{newpath:}}
+\paragraph{ \ \ }改变当前工作目录，会对路径中的符号链接解引用
+\end{spacing}
+
+\subsection{fchdir}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fchdir(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{chroot}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+chroot(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{realpath}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+realpath(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }解析出绝对路径名
+\end{spacing}
+
+\subsection{dirname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+dirname(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{basename}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+basename(pathname)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{信号}}
+\subsection{signal}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+signal(signum,function)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{function:}}
+\paragraph{ \ \ }function = SIG\_DEL | SIG\_IGN | function 调用信号处理程序过程中将阻塞一切信号
+\end{spacing}
+
+\subsection{kill}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+kill(pid,signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{raise}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+raise(signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }== kill(getpid(),signum)
+\end{spacing}
+
+\subsection{killpg}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+killpg(gid,signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{gid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }== kill(-gid,signum)
+\end{spacing}
+
+\subsection{strsignal}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+strsignal(signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }返回对该信号描述的字符串指针
+\end{spacing}
+
+\subsection{psignal}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+psignal(signum,meg)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{meg:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigemptyset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigemptyset(sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将信号集设置为空
+\end{spacing}
+
+\subsection{sigfillset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigfillset(sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将信号集填充入所有类型的信号
+\end{spacing}
+
+\subsection{sigaddset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigaddset(sigset\_t *,signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }向信号集中增加一个信号
+\end{spacing}
+
+\subsection{sigdelset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigdelset(sigset\_t *,signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }将信号集中的一个信号删除
+\end{spacing}
+
+\subsection{sigismember}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigismember(sigset\_t *,signum)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigandset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigandset(sigset\_t * result,sigset\_t *,sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{result:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigorset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigorset(sigset\_t * result,sigset\_t *,sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{result:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigisemptyset}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigisemptyset(sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigprocmask}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigprocmask(flag,sigset\_t * new,sigset\_t * old)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{new:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{old:}}
+\paragraph{ \ \ }flag = SIG\_BLOCK|SIG\_UNBLOCK|SIG\_SETMASK SIG\_BLOCK是或操作，SIG\_UNBLOCK是\&~操作，SIG\_SETMASK是赋值操作，处于信号集中的信号会被阻塞
+\end{spacing}
+
+\subsection{sigpending}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigpending(sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }返回当前被阻塞的信号
+\end{spacing}
+
+\subsection{sigaction}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigaction(signum,sigaction * new,sigaction * old)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{signum:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{new:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{old:}}
+\paragraph{ \ \ }切记初始化，将sa\_mask设置为空，sa\_flags设置为0，尤其是SIGINT sigaction.sa\_flags = SA\_RESTART|SA\_NODEFER|SA\_SIGINFO|SA\_INTERRUPT 设置SA\_RESTART后可在部分文件io被信号中断后进行重启(文件io只有对低速设备操作时才会被中断)，SA\_INTERRUPT关闭自动重启(有些操作系统默认中断后自动重启)，SA\_SIGINFO让信号处理函数变成void (int,siginfo *,char *)形式
+\end{spacing}
+
+\subsection{pause}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pause(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }阻塞直到接收到一个信号
+\end{spacing}
+
+\subsection{sigsetjmp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigsetjmp(sigjmp\_buf,mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sigjmp\_buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }如果mode为0，等价于setjmp 在mac os下setjmp可以代替sigsetjmp，会恢复信号掩码，linux则不会
+\end{spacing}
+
+\subsection{setlongjmp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setlongjmp(sigjmp\_buf,val)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sigjmp\_buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{val:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{abort}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+abort()
+\end{lstlisting}
+\paragraph{ \ \ }产生SIGABRT信号，设置了信号处理函数也会终止进程，阻塞和忽略该信号也无用
+\end{spacing}
+
+\subsection{sigaltstack}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigaltstack(stack\_t * new,stack\_t * old)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{new:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{old:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigqueue}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigqueue(pid,sig,union sigval value)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}}
+\paragraph{ \ \ }mac不支持
+\end{spacing}
+
+\subsection{sigsuspend}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigsuspend(sigset\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }一般在两个sigprocmask之间调用，解除非sigset里所包含信号的阻塞和pause(两个函数为原子操作)，然后函数阻塞直到接收到一个信号(中断sigsuspend里的pause，如果有经sigsuspend调用而解除阻塞的信号，则会立即返回)，之后将信号掩码该为调用sigsuspend之前的掩码，由于信号在被解除阻塞后会立即发送给进程，则如果在调用sigprocmask后想解除阻塞使信号被接收然后调用pause，但这个信号并不会打断pause，因为他在pause运行之前就已经被信号处理程序接收
+\end{spacing}
+
+\subsection{sigwait}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigwait(sigset\_t * set,int * signop)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{set:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signop:}}
+\paragraph{ \ \ }如果set中的信号集包含有被阻塞的信号，移除那些被阻塞的信号，函数立刻返回，否则阻塞直到收到集合中的信号(无论信号是否被阻塞)，返回后也不会取消对该信号的阻塞
+\end{spacing}
+
+\subsection{signalfd}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+signalfd(fd,sigset\_t *,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sighold}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sighold(sig)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigrelse}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigrelse(sig)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigignore}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigignore(sig)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigblock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigblock(mask)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{mask:}}
+\paragraph{ \ \ }写mask的就是要通过sigmask对信号进行转换
+\end{spacing}
+
+\subsection{sigsetmask}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigsetmask(mask)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{mask:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigpause}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigpause(mask)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{mask:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{sigmask}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigmask(sig)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}}
+\paragraph{ \ \ }将信号值进行转换，变成可以"与"操作的形式
+\end{spacing}
+
+\subsection{sigvec}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigvec(sig,sigvec *,sigvec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sig:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getitimer}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getitimer(which,itimerval *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }which = ITIMER\_REAL|ITIMER\_VIRTUAL|ITIMER\_PROF REAL代表现实时间，VIRTUAL代表用户态时间，PROF为用户态加内核态时间
+\end{spacing}
+
+\subsection{setitimer}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setitimer(which,itimerval * new,itimerval * old)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{new:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{old:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{alarm}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+alarm(seconds)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{seconds:}}
+\paragraph{ \ \ }定时器超时后会产生SIGALRM信号，如果seconds为0，并且此前有注册过且还未到期的闹钟，则取消该闹钟并返回剩余时间
+\end{spacing}
+
+\subsection{sleep}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sleep(seconds)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{seconds:}}
+\paragraph{ \ \ }休眠一段时间，可被信号中断
+\end{spacing}
+
+\subsection{nanosleep}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+nanosleep(timespec *,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }更高精度的睡眠，如果被中断，则在第二个参数中返回未休眠完的时间
+\end{spacing}
+
+\subsection{clock\_nanosleep}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clock\_nanosleep(clockid\_t,flags,timespec *,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{clockid\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }flags = 0|TIMER\_ABSTIME mac上不可用
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{时钟}}
+\subsection{clock\_gettime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clock\_gettime(clockid\_t,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{clockid\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }获取指定时钟的时间 clockid\_t = CLOCK\_REALTIME|CLOCK\_MONOTONIC|CLOCK\_PROCESS\_CPUTIME\_ID|CLOCK\_THREAD\_CPUTIME\_ID 分别表示实时系统时间，不带负跳数的系统实时时间，调用进程的CPU时间，调用线程的CPU时间
+\end{spacing}
+
+\subsection{clock\_getres}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clock\_getres(clockid\_t,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{clockid\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将timespec结构体初始化为clockid\_t参数对应的时钟精度，如果精度为1毫秒，则tv\_sec字段就是0，tv\_nsec字段就是1000000
+\end{spacing}
+
+\subsection{clock\_settime}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+clock\_settime(clockid\_t,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{clockid\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }设置时钟值
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{进程生成}}
+\subsection{fork}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fork(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }当执行fork之后，子进程会复制进程文件描述符表，但不会复制全局文件打开表，因为该表为内核级，当子进程或者父进程其一使用close关闭了该描述符后，另一个仍然可以进行IO操作，子进程一定要以exit退出，特别是在socket并发服务器里，很重要
+\end{spacing}
+
+\subsection{vfork}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+vfork(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }因为fork会复制父进程的页表，如果fork后马上就执行exec，那么这个复制是不必要的，所以vfork不会复制父进程的页表，如果vfork后没有立即执行exec，那么子进程实际是在操作父进程的进程空间，vfork会保证子进程先运行,并且在它执行exit或者\_exit后父进程才可以被调度
+\end{spacing}
+
+\subsection{exit}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+exit(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }对每个打开流调用fclose()函数，并调用登记过的终止处理函数后终止
+\end{spacing}
+
+\subsection{\_exit}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+\_exit(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }丢弃缓冲区的io数据，直接终止
+\end{spacing}
+
+\subsection{atexit}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+atexit(void (*func)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{(*func:}}
+\paragraph{ \ \ }(void)) 如果使用\_exit()来退出不会执行被登记过的函数
+\end{spacing}
+
+\subsection{wait}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+wait(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }调用时如果此时没有僵死进程，则会阻塞，如果有没回收的僵死进程，则立刻返回
+\end{spacing}
+
+\subsection{waitpid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+waitpid(int pid,int * status,options)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{status:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{options:}}
+\paragraph{ \ \ }options = WUNTRACED|WCONTINUED|WNOHANG WCONTINUED在mac上无效，由停止状态转变为运行态并不会使该系统调用返回
+\end{spacing}
+
+\subsection{WIFEXITED}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+WIFEXITED(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }status值应由WEXITSTATUS(status)处理，返回退出值
+\end{spacing}
+
+\subsection{WIFSIGNALED}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+WIFSIGNALED(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }status值应由WTERMSIG(status)处理，返回引起杀死的信号值
+\end{spacing}
+
+\subsection{WIFSTOPPED}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+WIFSTOPPED(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }status值应由WSTOPSIG(status)处理，返回引起停止的信号值
+\end{spacing}
+
+\subsection{WIFCONTINUED}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+WIFCONTINUED(status)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}}
+\paragraph{ \ \ }mac上无效
+\end{spacing}
+
+\subsection{waitid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+waitid(idtype\_t,pid,siginfo\_t *,options)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{idtype\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{options:}}
+\paragraph{ \ \ }options = WEXITED|WSTOPED|WCONTINUED|WNOHANG|WNOWAIT
+\end{spacing}
+
+\subsection{wait3}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+wait3(status,options,rusage *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{status:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{options:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{wait4}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+wait4(pid,status,options,rusage *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{status:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{options:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{execve}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execve(pathname,char ** argv,char ** env)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{env:}}
+\paragraph{ \ \ }倒数第二位为'v'代表参数类型为数组，为'l'则为列表，第一个参数一般设置为命令的文件名,最后一位为'p'则会通过路径列表查找文件，最后一位为'e'允许带环境参数，带环境参数后不会继承原进程环境变量,如果不带环境参数则继承原进程环境变量
+\end{spacing}
+
+\subsection{execle}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execle(pathname,char * argv,...,char ** env)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{...:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{env:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{execvp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execvp(filename,char ** argv)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{filename:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{execlp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execlp(filename,char * argv,...)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{filename:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{...:}}
+\paragraph{ \ \ }可以调用自己写的脚本，而且filename必须为完整路径
+\end{spacing}
+
+\subsection{execv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execv(pathname,char ** argv)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{execl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+execl(pathname,char * argv,...)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{...:}}
+\paragraph{ \ \ }无法调用自己写的脚本
+\end{spacing}
+
+\subsection{fexecve}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fexecve(fd,char ** argv,char ** env)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{argv:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{env:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{线程}}
+\subsection{pthread\_create}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_create(pthread\_t * tid,pthread\_attr\_t *,void *(*start)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{tid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*(*start:}}
+\paragraph{ \ \ }(void *),void * arg) 类似进程级的fork，*tid为线程创建成功后返回的线程id，线程从start函数开始运行，如果有超过一个以上的参数，则可以将这些参数放入某个结构，将结构的地址用arg参数传入，新线程会继承调用线程的浮点环境(文件描述符，环境变量，默认权限掩码等)和信号屏蔽字，不会继承原线程挂起的信号
+\end{spacing}
+
+\subsection{pthread\_exit}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_exit(void *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }退出当前线程，返回值可以由pthread\_join接收，或者用return，如果用exit的三个函数退出，会直接终止整个进程，当main结束时，子线程结束运行
+\end{spacing}
+
+\subsection{pthread\_self}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_self(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }类似进程级的getpid，获取自身线程id
+\end{spacing}
+
+\subsection{pthread\_equal}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_equal(pthread\_t,pthread\_t)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_t:}}
+\paragraph{ \ \ }判断两个线程id是否相等
+\end{spacing}
+
+\subsection{pthread\_join}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_join(pthread\_t tid,void * &rval)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{tid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&rval:}}
+\paragraph{ \ \ }类似进程级的waitpid，阻塞，直到tid指定的线程调用pthread\_exit(rval等于pthread\_exit的参数值)，通过return正常返回(rval会等于tid线程的返回值)，或者被取消(rval会等于PTHREAD\_CANCELED(1))
+\end{spacing}
+
+\subsection{pthread\_cancel}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cancel(pthread\_t)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_t:}}
+\paragraph{ \ \ }取消同一进程内的其他进程，仅仅提出请求，分离的线程也可取消
+\end{spacing}
+
+\subsection{pthread\_detach}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_detach(pthread\_t)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_t:}}
+\paragraph{ \ \ }分离指定的线程，分离后线程占用的资源会在终止时立即释放，不能用pthread\_join获取一个分离线程的退出状态
+\end{spacing}
+
+\subsection{pthread\_attr\_init}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_init(pthread\_attr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }对属性对象进行初始化
+\end{spacing}
+
+\subsection{pthread\_attr\_destroy}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_destroy(pthread\_attr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }对属性对象进行反初始化
+\end{spacing}
+
+\subsection{pthread\_attr\_getdetachstate}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_getdetachstate(pthread\_attr\_t *,int * detachstate)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{detachstate:}}
+\paragraph{ \ \ }获取属性对象的detachstat值
+\end{spacing}
+
+\subsection{pthread\_attr\_setdetachstate}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_setdetachstate(pthread\_attr\_t *,int * detachstate)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{detachstate:}}
+\paragraph{ \ \ }detachstate = PTHREAD\_CREATE\_DETACHED|PTHREAD\_CREATE\_JOINABLE，设置PTHREAD\_CREATE\_DETACHED后，线程在运行时就会直接处理分离阶段，设置PTHREAD\_CREATE\_JOINABLE的线程会正常启动
+\end{spacing}
+
+\subsection{pthread\_attr\_getstack}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_getstack(pthread\_attr\_t *,void ** addr,int * size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }获取属性对象中线程栈的大小和地址
+\end{spacing}
+
+\subsection{pthread\_attr\_setstack}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_setstack(pthread\_attr\_t *,void * addr,int size)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}}
+\paragraph{ \ \ }设置属性对象中线程栈的大小和地址，地址需要与边界对齐
+\end{spacing}
+
+\subsection{pthread\_attr\_getstacksize}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_getstacksize(pthread\_attr\_t *,int * stacksize)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{stacksize:}}
+\paragraph{ \ \ }获取属性对象中线程栈的大小
+\end{spacing}
+
+\subsection{pthread\_attr\_setstacksize}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_setstacksize(pthread\_attr\_t *,int stacksize)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{stacksize:}}
+\paragraph{ \ \ }设置属性对象中线程栈的大小，不需要处理分配地址
+\end{spacing}
+
+\subsection{pthread\_attr\_getguardsize}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_getguardsize(pthread\_attr\_t *,int * guardsize)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{guardsize:}}
+\paragraph{ \ \ }获取线程栈末尾之后避免栈溢出的拓展内存大小
+\end{spacing}
+
+\subsection{pthread\_attr\_setguardsize}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_attr\_setguardsize(pthread\_attr\_t *,int guardsize)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{guardsize:}}
+\paragraph{ \ \ }设置线程栈末尾之后避免栈溢出的拓展内存大小，如果设置为0，则取消此特征
+\end{spacing}
+
+\subsection{pthread\_mutex\_init}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_init(pthread\_mutex\_t *,pthread\_mutexattr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }动态分配互斥量
+\end{spacing}
+
+\subsection{pthread\_mutex\_destroy}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_destroy(pthread\_mutex\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }释放动态互斥量的内存
+\end{spacing}
+
+\subsection{pthread\_mutex\_lock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_lock(pthread\_mutex\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }对互斥量进行加锁，如果互斥量已经上锁，调用线程将阻塞直到互斥量被解锁
+\end{spacing}
+
+\subsection{pthread\_mutex\_trylock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_trylock(pthread\_mutex\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }如果互斥量已经上锁，不会阻塞，会直接返回失败，并且设置EBUSY错误码
+\end{spacing}
+
+\subsection{pthread\_mutex\_unlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_unlock(pthread\_mutex\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }对互斥量解锁
+\end{spacing}
+
+\subsection{pthread\_mutex\_timedlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutex\_timedlock(pthread\_mutex\_t *,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }mac os没有实现此函数，请求加锁，如果阻塞，则等待一定时间，如果在时间内未成功开锁，则返回错误
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_init}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_init(pthread\_mutexattr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }初始化互斥量属性
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_destroy}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_destroy(pthread\_mutexattr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }反初始化
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_getpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_getpshared(pthread\_mutexattr\_t *,int * attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }获取互斥量进程共享属性
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_setpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_setpshared(pthread\_mutexattr\_t *,int attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }attr = PTHREAD\_PROCESS\_PRIVATE|PTHREAD\_PROCESS\_SHARED PRIVATE为默认行为，多个线程可以访问同一个互斥量，SHARED为进程可以访问同一个互斥量
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_gettype}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_gettype(pthread\_mutexattr\_t *,int * type)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}}
+\paragraph{ \ \ }获取线程的互斥量锁定特性
+\end{spacing}
+
+\subsection{pthread\_mutexattr\_settype}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_mutexattr\_settype(pthread\_mutexattr\_t *,flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }flag = PTHREAD\_MUTEX\_NORMAL|PTHREAD\_MUTEX\_ERRORCHECK|PTHREAD\_MUTEX\_RECURSIVE NORMAL一种标准互斥量类型，不进行错误检查或死锁检测，ERRORCHECK为互斥量提供死锁检测，RECURSIVE运行同一线程在互斥量解锁之前对该互斥量多次加锁，在解锁状态和加锁状态不相同的情况下，不会释放该锁
+\end{spacing}
+
+\subsection{pthread\_rwlock\_init}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_init(pthread\_rwlock\_t *,pthread\_rwlockattr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }对读写锁进行初始化，如需要默认属性可以传递NULL给第二个参数
+\end{spacing}
+
+\subsection{pthread\_rwlock\_destroy}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_destroy(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }在使用完读写锁后需要进行释放
+\end{spacing}
+
+\subsection{pthread\_rwlock\_rdlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_rdlock(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }使用读模式锁定读写锁，可对一个锁同时上多个读锁，可能会因为系统实现而对读写锁有次数限制，所以应进行返回值检查
+\end{spacing}
+
+\subsection{pthread\_rwlock\_wrlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_wrlock(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }使用写模式锁定读写锁，一个锁上只能有一个写锁，申请上其他锁时都会产生阻塞
+\end{spacing}
+
+\subsection{pthread\_rwlock\_unlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_unlock(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }解锁读写锁
+\end{spacing}
+
+\subsection{pthread\_rwlock\_tryrdlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_tryrdlock(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }获取读锁成功时，返回0，否则返回EBUSY
+\end{spacing}
+
+\subsection{pthread\_rwlock\_trywrlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlock\_trywrlock(pthread\_rwlock\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }获取写锁成功时，返回0，否则返回EBUSY
+\end{spacing}
+
+\subsection{pthread\_rwlockattr\_getpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlockattr\_getpshared(pthread\_rwlockattr\_t *,int * attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }获取读写锁进程共享属性
+\end{spacing}
+
+\subsection{pthread\_rwlockattr\_setpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_rwlockattr\_setpshared(pthread\_rwlockattr\_t *,int attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }设置读写锁进程共享属性
+\end{spacing}
+
+\subsection{pthread\_cond\_init}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_init(pthread\_cond\_t *,pthread\_condattr\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }动态分配条件变量
+\end{spacing}
+
+\subsection{pthread\_cond\_destroy}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_destroy(pthread\_cond\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }释放条件变量所在的内存空间前对条件变量进行反初始化
+\end{spacing}
+
+\subsection{pthread\_cond\_wait}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_wait(pthread\_cond\_t *,pthread\_mutex\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }选定某个已上锁的互斥量，然后阻塞并等待条件变量变为真(即等待其他线程运行pthread\_cond\_signal或者pthread\_cond\_broadcast)，运行期间会释放互斥锁，当满足条件返回时(即被pthread\_cond\_signal或者pthread\_cond\_broadcast取消阻塞后)会再次申请上锁，因为当它阻塞时释放了互斥锁
+\end{spacing}
+
+\subsection{pthread\_cond\_timedwait}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_timedwait(pthread\_cond\_t *,pthread\_mutex\_t *,timespec *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }指定所需要等待的时间，当超出时间后还未满足条件则返回错误码，并且不会将释放掉的互斥锁再次上锁，这里的timespec是当前时间加成等待时间
+\end{spacing}
+
+\subsection{pthread\_cond\_signal}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_signal(pthread\_cond\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }将条件变为真，并至少唤醒一个等待该条件的线程(即那些用pthread\_cond\_wait将cond绑定到互斥量的线程)
+\end{spacing}
+
+\subsection{pthread\_cond\_broadcast}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cond\_broadcast(pthread\_cond\_t *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }唤醒所有等待该条件的线程
+\end{spacing}
+
+\subsection{pthread\_once}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_once(pthread\_once\_t *,void (*init)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{(*init:}}
+\paragraph{ \ \ }(void))
+\end{spacing}
+
+\subsection{pthread\_condattr\_getpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_condattr\_getpshared(pthread\_condattr\_t *,int * attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }获取条件变量的的进程同步属性
+\end{spacing}
+
+\subsection{pthread\_condattr\_setpshared}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_condattr\_setpshared(pthread\_condattr\_t *,int attr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{attr:}}
+\paragraph{ \ \ }控制着条件变量是可以被单个进程的多个线程使用，还是可以被多进程的线程使用
+\end{spacing}
+
+\subsection{pthread\_key\_create}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_key\_create(pthread\_key\_t *,void (*destructor)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{(*destructor:}}
+\paragraph{ \ \ }(void *)) 创建一个键，用于获取对线程特定数据的访问
+\end{spacing}
+
+\subsection{pthread\_setspecific}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_setspecific(pthread\_key\_t,void *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_key\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{pthread\_getspecific}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_getspecific(pthread\_key\_t)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_key\_t:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{pthread\_cleanup\_push}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cleanup\_push(void (*func)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{(*func:}}
+\paragraph{ \ \ }(void *),void * arg) 设置线程退出处理程序，等同于进程的atexit，但如果线程正常退出则不会调用(return)
+\end{spacing}
+
+\subsection{pthread\_cleanup\_pop}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_cleanup\_pop(0|!0)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{0|!0:}}
+\paragraph{ \ \ }如果为0，线程退出处理函数将不会被调用，如果非0则立即调用，mac上这两个函数用宏实现，如果使用最好同时调用
+\end{spacing}
+
+\subsection{pthread\_setcancelstate}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_setcancelstate(state,oldstate)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{state:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{oldstate:}}
+\paragraph{ \ \ }type = PTHREAD\_CANCEL\_DISABLE|PTHREAD\_CANCEL\_ENABLE 设置可取消状态，默认状态为ENABLE，如果在ENABLE状态时接收到了取消请求，挂起请求,在到达取消点时线程会取消，如果为DISABLE状态，收到的取消请求会挂起，直到由DISABLE变为ENABLE时，才会在下一个取消点处理取消请求
+\end{spacing}
+
+\subsection{pthread\_setcanceltype}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_setcanceltype(type,oldtype)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{type:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{oldtype:}}
+\paragraph{ \ \ }type = PTHREAD\_CANCEL\_ASYNCHRONOUS|PTHREAD\_CANCEL\_DEFERRED 设置可取消类型，type分别为异步取消和推迟取消，默认为推迟取消，则需要到达取消点时才可取消，而设置异步取消时，线程可以在任意时间取消
+\end{spacing}
+
+\subsection{pthread\_testcancel}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_testcancel(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }设置取消点，到达此函数时，如果有挂起的取消请求，并且取消状态不为DISABLE，那么线程会被取消，否则此函数无效
+\end{spacing}
+
+\subsection{pthread\_sigmask}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_sigmask(int how,sigset\_t * new,sigset\_t * old)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{how:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{new:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{old:}}
+\paragraph{ \ \ }线程级的sigprocmask，失败时返回错误码，而不是设置errno并返回-1
+\end{spacing}
+
+\subsection{sigwait}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sigwait(sigset\_t * set,int * signop)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{set:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signop:}}
+\paragraph{ \ \ }先解除信号的阻塞状态，如果set中的信号集包含有被阻塞的信号，移除那些被阻塞的信号，函数立刻返回，否则阻塞直到收到集合中的信号(无论信号是否被阻塞)，此函数返回后不会改变原来的信号掩码
+\end{spacing}
+
+\subsection{pthread\_kill}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_kill(pthread\_t,signo)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pthread\_t:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{signo:}}
+\paragraph{ \ \ }线程级的kill，可以通过发送0查看线程是否存在，如果信号的默认处理动作是终止该进程，那么发送到任意一个线程都会终止整个进程
+\end{spacing}
+
+\subsection{线程与fork：当线程调用fork时，就为子进程创建了整个地址空间的副本，在子进程内部，只存在一个进程，它是由父进程中调用fork的线程的副本构成的，由于写时复制的原因，除非是fork后立即调用exec，否则父进程和子进程还可以共享内存页，如果父进程中的线程占有锁，那么子进程也将同样占有这些锁，可是子线程并不包含那些占有锁线程的副本}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+线程与fork：当线程调用fork时，就为子进程创建了整个地址空间的副本，在子进程内部，只存在一个进程，它是由父进程中调用fork的线程的副本构成的，由于写时复制的原因，除非是fork后立即调用exec，否则父进程和子进程还可以共享内存页，如果父进程中的线程占有锁，那么子进程也将同样占有这些锁，可是子线程并不包含那些占有锁线程的副本(包含线程代码的副本，但是这些线程代码并不会自动运行)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{包含线程代码的副本，但是这些线程代码并不会自动运行:}}
+\paragraph{ \ \ }，所以子进程没有办法知道它占有了哪些锁，需要释放哪些锁
+\end{spacing}
+
+\subsection{pthread\_atfork}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pthread\_atfork(void (*prepare)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{(*prepare:}}
+\paragraph{ \ \ }(void),void(*parent)(void),void(*child)()) 锁清理函数，在线程fork时进行锁清理，prepare用于在调用fork前获取父进程定义的所有锁，parent用于在fork生成子进程后返回前释放父进程中prepare中获取的所有锁，child函数同parent函数一样，不过是作用于子线程中
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{会话组}}
+\subsection{getpgrp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpgrp()
+\end{lstlisting}
+\paragraph{ \ \ }获取调用进程的进程组id
+\end{spacing}
+
+\subsection{getpgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpgid(pid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}}
+\paragraph{ \ \ }获取进程id为pid的进程组id，如果pid为0，则为调用进程
+\end{spacing}
+
+\subsection{setpgrp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setpgrp()
+\end{lstlisting}
+\paragraph{ \ \ }将调用进程的进程组id设置为调用进程的进程id
+\end{spacing}
+
+\subsection{setpgid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setpgid(pid,pgid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pgid:}}
+\paragraph{ \ \ }如果pid为0，则等价于getpid()，如果pgid为0，也等于getpid()
+\end{spacing}
+
+\subsection{getsid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getsid()
+\end{lstlisting}
+\paragraph{ \ \ }获取进程的会话id
+\end{spacing}
+
+\subsection{setsid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setsid(pid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}}
+\paragraph{ \ \ }创建一个新会话
+\end{spacing}
+
+\subsection{tcgetpgrp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tcgetpgrp(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }fd为终端关联的文件描述符，返回前台进程组id
+\end{spacing}
+
+\subsection{tcsetpgrp}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tcsetpgrp(fd,pid)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{pid:}}
+\paragraph{ \ \ }将fd关联终端的前台组id设置为会话中的另一个进程组id
+\end{spacing}
+
+\subsection{tcgetsid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tcgetsid(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }获取会话首进程的进程组id
+\end{spacing}
+
+\subsection{getpriority}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpriority(which,who)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{who:}}
+\paragraph{ \ \ }which = PRIO\_PROCESS|PRIO\_PGRP|PRIO\_USER
+\end{spacing}
+
+\subsection{setpriority}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setpriority(which,who,value)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{which:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{who:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{value:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{setutxent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setutxent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{endutxent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endutxent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{utmpxname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+utmpxname(filepath)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{filepath:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getutxent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getutxent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getutxid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getutxid(utpmx *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getutxline}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getutxline(utmpx *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{pututxline}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pututxline(utmpx *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{管道}}
+\subsection{pipe}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pipe(int [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }如果某管道的写入端未关闭，且当前管道内无数据，此时进行读取会阻塞；即管道的写入端如果已关闭，此时进行读取且管道内无数据会直接返回0，如果写一个读端已经关闭的管道，则产生信号SIGPIPE，如果选择忽略此信号，则write函数返回-1，并且设置errno为EPIPE，fork会复制pipe产生的文件描述符，历史上，该管道是半双工的(即同一时刻只能有一端发送，一端接受)，mac上目前还是半双工的，某些系统支持全双工管道
+\end{spacing}
+
+\subsection{popen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+popen(char * cmd,char * mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ }本质上是先创建一个pipe，然后调用fork，子进程调用exec运行cmd，因为cmd命令有可能需要输入数据，所以mode可能是"r"或者是"w"，如果返回的文件指针是可读的，那么使用"r"，如果使用的文件指针是可写的，那么使用"w"
+\end{spacing}
+
+\subsection{pclose}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pclose(FILE *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }若成功则返回cmd的退出状态，否则返回-1
+\end{spacing}
+
+\subsection{mkfifo}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mkfifo(char * pathname,mode\_t mode)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{mode:}}
+\paragraph{ \ \ } 命名管道，即该管道实际上为一文件，程序需要打开该文件进行通信，一端以只读方式打开，另一端以只写方式打开，先打开的一端会阻塞，直到另一端打开，或者设置O\_NONBLOCK以非阻塞方式打开，设置O\_NONBLOCK后需要先打开读取端，当以非阻塞方式打开管道后，如果写端已打开，但read时但无数据读取，则返回-1，如果写端已关闭，则返回0，如果读取端已关闭，进行write操作时会触发sigpipe信号，对阻塞方式打开的读写管道即使另一端已关闭进行操作时也会阻塞
+\end{spacing}
+
+\subsection{}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+XSL IPC: 每个内核中的IPC结构都用一个非负整数的标示符加以引用，例如要向一个消息队列发送消息或者从一个消息队列读取消息，只需要知道其消息队列，标示符是IPC对象的内部名，为了使多个进程能作用在同一个IPC对象上，需要提供一个外部名，因此每个IPC对象都会与一个键相关联，将这个键作为IPC对象的外部名，每一个IPC结构都会关联一个ipc\_perm结构，ipc\_perm{uid\_t uid(拥有者id)}
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{uid(拥有者id:}}
+\paragraph{ \ \ }; gid\_t gid; uid\_t cuid(创建者id); gid\_t cgid; mode\_t mode
+\end{spacing}
+
+\subsection{ftok}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ftok(char * pathname,int id)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pathname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{id:}}
+\paragraph{ \ \ }使用路径名和一个项目id产生一个键
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{消息队列}}
+\subsection{msgget}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+msgget(key,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{key:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = IPC\_CREAT|IPC\_EXCL|0755 key |= IPC\_PRIVATE 注意：创建时一定要指定权限，消息队列已经很少使用了，新程序尽量不要使用它，IPC\_CREAT创建一个新的消息队列或者打开一个现有队列，IPC\_CREAT|IPC\_EXCL若已存在对应的消息队列，则退出，否则创建，返回一个消息队列id
+\end{spacing}
+
+\subsection{msgsnd}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+msgsnd(int msqid,void *,msgsize,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{msqid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{msgsize:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flagss = IPC\_NOWAIT 将新消息添加到队列尾端，发送的消息类型不能为0，第三个参数为除了type项之外的数据大小之和，mac上的管道容量为2048个字节
+\end{spacing}
+
+\subsection{msgrcv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+msgrcv(int msqid,void *,maxmsgsize,msgtype,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{msqid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{maxmsgsize:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{msgtype:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = IPC\_NOWAIT|MSG\_NOERROR IPC\_NOWAIT如果没有消息可读，则直接返回-1，MSG\_NOERROR用于当maxsize参数小于接收到的消息长度时，截断超过maxsize长度后的数据，如果不指定，返回-1，并且消息仍然留在队列当中， msgtype==0则接受队列中第一条消息，大于0则接受队列中消息类型等于msgtype的消息，返回值为类似于read，等于接收到数据的字节数
+\end{spacing}
+
+\subsection{msgctl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+msgctl(int msqid,cmd,msqid\_ds *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{msqid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }cmd = IPC\_RMID|IPC\_STAT|IPC\_SET 分别为删除消息队列以及其中的数据，获取msqid对应的msqid\_ds属性，设置msqid对应的msqid\_ds属性，msqid\_ds{ipc\_perm msg\_perm; msgqnum\_t msg\_qnum(剩余消息数量); msglen\_t msg\_qbytes(队列容量);msglen\_t cbytes(当前队列存在的数据量); pid\_t msg\_lspid(最后发送消息进程的pid); pid\_t msg\_lrpid(最后接受消息进程的pid); time\_t msg\_stime(最后发送消息的时间); time\_t msg\_rtime(最后接受消息的时间); time\_t msg\_ctime(队列最后改变的时间)}
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{信号量}}
+\subsection{semget}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+semget(key,nsems,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{key:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{nsems:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = IPC\_CREAT|IPC\_EXCL|O755 nsems是该集合中的信号量数，如果是创建新集合，就必须指定nsems，否则将其指定为0，表示引用一个已经存在的集合，注意：创建时需要指定权限，信号量使用一个未命名结构体 struct{unsigned short semval(信号量的值); pid\_t sempid(最后操作此信号量的pid); semncnt(等待此信号量的值大于针对此信号调用semop时所指定sem\_op绝对值的进程数量，可以直接理解为阻塞在该信号量的数量); semzcnt(等待此信号量变为0的进程数量)}
+\end{spacing}
+
+\subsection{semop}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+semop(semid,sembuf *,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{semid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }sembuf{unsigned short sem\_num(指定信号),short sem\_op(进行的操作),short sem\_flg} sem\_flg = IPC\_NOWAIT|SEM\_UNDO SEM\_UNDO用于如果某进程占用了信号量的资源，但是当它结束时，进程占用的信号量值并不会释放，指定SEM\_UNDO可以解决这个问题，当进程结束时，将其占用的信号量恢复 若sem\_op为正值，则将此值加到对应的信号量上，若sem\_op为负值，则表示要获取由该信号量控制的资源，如果该信号量的值大于等于sem\_op的绝对值，则直接从信号量值中减去，否则，若指定了IPC\_NOWAIT，则直接出错返回EAGIN，若没有指定，则该信号量的semncnt值+1，然后调用进程被挂起知道以下行为发生，此信号量的值变成大于了sem\_op的绝对值，则从该信号量值减去sem\_op的绝对值，然后继续运行，收到信号，并从信号处理程序返回，semncnt减1，函数出错并设置EINTR，或者此信号量被删除，出错返回EIDRM，若sem\_op等于0，则表示调用进程希望等待该信号量变为0，具体情况类似于sem\_op小于0，当该操作阻塞时，即减少信号量值导致信号量小于0时，此时如果被信号中断，该操作不会自动重启，
+\end{spacing}
+
+\subsection{semctl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+semctl(semid,semnum,cmd,...union semun)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{semid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{semnum:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{semun:}}
+\paragraph{ \ \ }注意：联合体参数不是指针类型，semnum表示第几个信号量，从0开始，部分cmd操作对此参数没有要求，cmd = IPC\_RMID|IPC\_STAT|IPC\_SET|GETVAL|SETVAL|GETALL|GETPIC|GETNCNT|GETZCNT semun{int val(用于SETVAL); semid\_ds * buf(用于IPC\_STAT以及IPC \_SET); unsigned short * array(用于GETALL以及SETALL)} IPC\_RMID用于删除信号量集，IPC\_STAT用于获取获取该信号量集关联的数据结构，IPC\_SET用semun->semid\_ds的属性更新该信号量集关联的数据结构，GETVAL返回由semid指定的第semnum个信号量的值，SETVAL将第semnum个信号量设置为semnu->val，GETALL将信号量集中的值设置为semun->array[]，SETALL为设置，semid\_ds{sem\_perm(权限信息); sem\_nsems(信号量的个数); semds.sem\_otime(最后一次op操作的时间); semds.sem\_ctime(最后一次修改时间)}
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{共享内存}}
+\subsection{shmget}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+shmget(key,size,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{key:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{size:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = IPC\_CREAT|IPC\_EXCL|0755 当创建一个新段时，size指定需要的大小，当引用一个已经存在的段时，则指定为0
+\end{spacing}
+
+\subsection{shmat}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+shmat(shmid,addr,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{shmid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = SHM\_RND|SHM\_RDONLY 分别为将addr的值自动四舍五入到页面大小的倍数，将内存块以只读方式装载到调用进程的虚拟内存，如果addr为0则不需要用SHM\_RND，系统会自动将共享内存块映射到可用的地址上
+\end{spacing}
+
+\subsection{shmdt}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+shmdt(addr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}}
+\paragraph{ \ \ }接触对addr开始的内存共享段的映射，并将共享内存段的引用计数减一
+\end{spacing}
+
+\subsection{shmctl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+shmctl(shmid,cmd,shmid\_ds *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{shmid:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }cmd = IPC\_RMID|IPC\_STAT|IPC\_SET  IPC\_RMID用于删除此共享内存段，标示符会立即删除，所以不能再用shmat进行该段的连接，但是该内存段不会立即删除，只有当引用此共享内存段的计数变为0后才会真正删除该段，IPC\_STAT用于获取此段的属性，IPC\_SET为设置，shmid\_ds{shm\_perm(权限设置) shm\_segsz(共享存储的段大小); shm\_lpid(最后进行op操作的pid); shm\_cpid(创建者的pid?); shm\_nattch(当前共享此区域的进程数量); shm\_atime(最后一次访问的时间); shm\_dtime(最后一次分离此内存段的时间); shm\_ctime(最后一次改变的时间)}
+\end{spacing}
+
+\subsection{mmap}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mmap(addr,length,prot,flags,fd|-1,offset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{prot:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{fd|-1:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{offset:}}
+\paragraph{ \ \ }prot = PROT\_NONE|PROT\_READ|PROT\_WRITE|PROT\_EXEC PROT\_NONE表示映射区不可访问，PROT\_READ表示映射区可读，PROT\_READ表示映射区可写，PROT\_EXEC表示映射区可执行，如果要写文件，则应该设置PROT\_READ|PROT\_WRITR并且打开文件时应该指定标记O\_RDWR，映射文件时size不能超过文件的大小(可用lseek加write或者ftruncate增加文件大小) flags = MAP\_PRIVATE|MAP\_SHARED|MAP\_ANONYMOUS|MAP\_FIXED|MAP\_NORESERVE PROT\_NONE表示区域无法访问，MAP\_PRIVATE表示创建私人映射，会创建一份副本，对数据的改变不会影响源文件，MAP\_SHARED表示创建共享映射，存储操作等于对文件调用write，MAP\_ANONYMOUS表示创建匿名映射，私人匿名映射类似堆分配(但是没有堆分配时块与块之间的联系)，共享匿名映射就是共享内存分配，MAP\_FIXED表示不对addr参数进行处理，否则会将addr参数向上取整为分页大小的倍数，此时会对addr地址强行进行映射，还能覆盖该地址之前的映射
+\end{spacing}
+
+\subsection{munmap}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+munmap(addr,length)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}}
+\paragraph{ \ \ }解除映射区，如果是私人映射，那么映射区的数据会被丢弃
+\end{spacing}
+
+\subsection{msync}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+msync(addr,length,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }将页写回硬盘，flags = MS\_SYNC|MS\_ASYNC|MS\_INVALIDATE 分别为同步更新，异步更新，通知系统丢弃那些与底层存储器没有同步的页
+\end{spacing}
+
+\subsection{mprotect}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mprotect(addr,length,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = prot = PROT\_NONE|PROT\_READ|PROT\_WRITE|PROT\_EXEC 用于更改保护位，addr必须是系统页长的整数倍
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{内存锁}}
+\subsection{mlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mlock(addr,length)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}}
+\paragraph{ \ \ }当调用完成后，即使映射的地址区域当前不在区域内，也会在该函数返回前将该区域换进内存，而不需要等待发生缺页
+\end{spacing}
+
+\subsection{munlock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+munlock(addr,length)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}}
+\paragraph{ \ \ }解锁以页为单位，当对同一页进行多次上锁也只会产生一次效果，某页的上锁属性应该保存在进程的该页的映射数据结构中，如果多个进程共享映射同一组分页时，只要还存在一个进程持有这些分页上的内存锁，那么这些分页就会保持被锁进内存的状态
+\end{spacing}
+
+\subsection{mlockall}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mlockall(flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = MCL\_CURRENT|MCL\_FUTURE MCL\_CURRENT将进程的虚拟内存中当前所有映射的分页全部锁进内存，MCL\_FUTURE将后续映射到虚拟内存中的所有分页锁进内存
+\end{spacing}
+
+\subsection{munlockall}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+munlockall(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{mincore}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+mincore(addr,length,char vec[])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{vec[]:}}
+\paragraph{ \ \ }无论是产生何种映射，包括私人匿名映射(堆分配)，并不会立即为这些映射分配相应的内存，需要访问相应的虚拟内存产生缺页错误后才会进行分配
+\end{spacing}
+
+\subsection{madvise}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+madvise(addr,length,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = MADV\_NORMAL|MADV\_RANDOM|MADV\_SEQUENTIAL|MADV\_WILLNEED|MADV\_DONTNEED
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{记录锁}}
+\subsection{flock}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+flock(fd,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = LOCK\_SH|LOCK\_EX|LOCK\_UN|LOCK\_NB LOCK\_SH为设置共享锁，LOCK\_EX为设置互斥锁，LOCK\_UN为解锁，LOCK\_NB为执行非阻塞操作，无论对文件的访问模式是只读，只写或是读写都可以在上面放置共享锁和互斥锁，该函数的操作单位为整个文件，并且flock的锁转换非原子操作，它是先解锁，然后上锁，在解锁和上锁之间可能会有其他进程的上锁请求成功执行，此时该函数会阻塞，并且原本拥有的锁丢失
+\end{spacing}
+
+\subsection{fcntl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fcntl(fd,cmd,flock *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cmd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }cmd = F\_SETLK|F\_SETLKW|F\_GETLK 分别为设置锁，非阻塞操作设置锁，检测锁，flock{l\_type,l\_whence,l\_start,l\_len,l\_pid} l\_type = F\_RDLCK|F\_WRLCK|F\_UNLCK 分别为设置读锁(共享锁)，写锁(互斥锁)，解锁，该函数放置锁需要与文件的打开模式相对应，即需要放置两种锁时，文件的打开模式应该为O\_RDWR l\_start = SEEK\_SET|SEEK\_CUR|SEEK\_END l\_whence为偏移量 l\_len为长度，,当len为0时，表示锁的范围可以拓展到最大可能偏移量(无论此后追加写入了多少数据)，l\_pid当cmd为F\_GETLK时有效，返回拥有该锁的进程id，单个进程在某一时刻只能对一个文件区间拥有一把锁。多次加锁会覆盖上个锁
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{套接字}}
+\subsection{socket}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+socket(domain,type,protocal)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{domain:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{protocal:}}
+\paragraph{ \ \ }domain = AF\_UNIX|AF\_INET|AF\_INET6 分别为UNIX域，Ipv4因特网域，Ipv6因特网域 type = SOCK\_STREAM|SOCK\_DGRAM|SOCK\_SEQPACKET|SOCK\_RAW 分别为流(TCP),报文(UDP),可靠传输的UDP,IP协议的数据报接口 protocal通常为0，INADDR\_LOOPBACK(0x7f000001)为IPV4回环地址，INADDR\_ANY(0x0)为IPV4通配地址，均为整形数据，IN6ADDR\_LOOPBACK\_INIT为IPV6回环地址，IN6ADDR\_ANY\_INIT为IPV6通配地址，为结构体类型
+\end{spacing}
+
+\subsection{bind}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+bind(int sockfd,sockaddr * addr,int addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addrlen:}}
+\paragraph{ \ \ }sockaddr = sockaddr\_un(AF\_UNIX)|sockaddr\_in(AF\_INET)|sockaddr\_in6(AF\_INET6) addrlen要根据使用的sockaddr来确定，不能使用sizeof(struct sockaddr)，sockaddr{unsigned char sa\_len;sa\_family\_t sa\_family; char sa\_data[14]} sockaddr\_un{unsigned char sun\_len; sa\_family\_t sun\_family; char sun\_path[104](用于创建套接字的文件名，该文件仅用于向客户客户进程告示套接字名字，无法打开，也不能由应用程序进行通讯)}当sun\_path指定的文件已存在时，bind会失败，也就是说该文件是一次性的，程序结束时就应该删除该文件，每次bind时都要保证该文件不存在， sockaddr\_in{unsigned char sin\_len; sa\_family\_t sin\_family; in\_port\_t sin\_port; struct in\_addr sin\_addr; unsigned char sin\_zero[8]} struct sin\_addr{in\_addr\_t(无符号32位整形) s\_addr}
+\end{spacing}
+
+\subsection{listen}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+listen(int sockfd,int backlog)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{backlog:}}
+\paragraph{ \ \ }将sockfd指定为监听套接字，此后此套接字能接收到连接请求，backlog用于限制发起请求连接的数量，一旦未处理连接等于backlog，系统就会拒绝多余的连接请求
+\end{spacing}
+
+\subsection{accept}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+accept(int sockfd,sockaddr * addr,&addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&addrlen:}}
+\paragraph{ \ \ }获得sockfd监听的连接请求并建立连接，返回一个套接字描述符，此描述符连接到客户端调用connect的进程，并将请求连接端的地址信息写入addr中，len参数为缓冲区的大小，函数返回时，会将len改为向缓冲区写入的字节数，如果不关心对端机器的地址信息，可以将addr和len置为NULL，如果sockfd是非阻塞且当前没有连接请求，accept会退出并返回-1，否则将阻塞直到收到一个连接请求(阻塞模式)
+\end{spacing}
+
+\subsection{connect}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+connect(sockfd,sockaddr *,addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addrlen:}}
+\paragraph{ \ \ }如果要处理一个面向连接的网络服务(SOCK\_STREAM或SOCK\_SEQPACKET)，那么在开始交换数据之前，需要在请求服务的进程套接字和提供服务的进程套接字之间建立一个连接，如果sockfd没有绑定到一个地址，connect会给调用者绑定一个默认地址，如果connect失败，在部分系统上套接字会变成未定义的，最好是关闭套接字，新建一个套接字后再进行connect操作，当在一个数据报socket上使用connect后，可以使用read和write操作描述符
+\end{spacing}
+
+\subsection{shutdown}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+shutdown(sockfd,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = SHUT\_RD|SHUT\_WR|SHUT\_RDWR SHUT\_RD为关闭读端，那么无法从套接字读取数据，SHUT\_WR为关闭写端，表示无法用套接字发送数据，SHUT\_RDWR则既无法读取也无法发送，由于套接字的close命令并不一定能直接关闭socket(比如通过dup复制了描述符)所以使用shutdown可以避免这个问题，而且使用shutdown能够使用单向通讯
+\end{spacing}
+
+\subsection{send}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+send(int sockfd,void * buf,size\_t len,int flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }使用时套接字必须已经连接，类似于write，但可以指定标志来改变处理传输数据的方式 flags = MSG\_DONTWAIT，MSG\_DONTWAIT使用非阻塞操作
+\end{spacing}
+
+\subsection{recv}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+recv(int sockfd,void * buf,size\_t len,int flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = MSG\_DONTWAIT|MSG\_OOB|MSG\_PEEK|MSG\_WAITALL MSG\_DONTWAIT此次调用不会阻塞，MSG\_PEEK获取sockfd缓冲区中数据的一份副本，不会将数据从缓冲区移除，MSG\_WAITALL直到等待接受到len个字节后才会返回
+\end{spacing}
+
+\subsection{sendto}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sendto(int sockfd,void * buf,size\_t length,int flags,sockaddr * addr,addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addrlen:}}
+\paragraph{ \ \ }可用于发送报文，通过addr指定目标地址，如过sockfd有连接，那么无视addr
+\end{spacing}
+
+\subsection{recvfrom}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+recvfrom(int sockfd,void buf,size\_t length,int flags,sockaddr * addr,&addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{length:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&addrlen:}}
+\paragraph{ \ \ }带有获取发送者信息功能的recv，将发送者的地址信息写入addr，addrlen表示缓冲区的大小，当函数返回时将len改为向缓冲区写入的字节数
+\end{spacing}
+
+\subsection{socketpair}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+socketpair(domain,type,protocal,int [2])
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{domain:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{protocal:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{[2]:}}
+\paragraph{ \ \ }前三个参数类似socket，第四个参数类似于pipe，生成两个连接着的unix域的socket套接字，domain = AF\_UNIX|AF\_INET|AF\_INET6 虽然结构足够通用，允许socketpair用于其他域，但一般来说操作系统仅对unix域提供支持，type = SOCK\_STREAM|SOCK\_DGRAM 分别为字节流和报文，unix域的数据报是可靠的，既不会丢失报文也不会传递出错，unix域套接字更像是套接字和管道的结合，一对相互连接的套接字可以起到全双工管道的作用，两端对读和写开放，由于创建的套接字没有名字，所以不能在无关进程中使用，如需要不同进程间通讯需要使用socket函数
+\end{spacing}
+
+\subsection{htons}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+htons(short)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{short:}}
+\paragraph{ \ \ }h代表主机(host)，n代表网络(network)，l代表32位，s代表16位，表示在主机字节序与网络字节序之间进行转换
+\end{spacing}
+
+\subsection{htonl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+htonl(int)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{int:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{ntohs}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ntohs(short)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{short:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{ntohl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ntohl(int)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{int:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{inet\_aton}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+inet\_aton(in\_addr)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{in\_addr:}}
+\paragraph{ \ \ }只能用于IPv4，已过时
+\end{spacing}
+
+\subsection{inet\_ntoa}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+inet\_ntoa(char *,in\_addr *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }只能用于IPv4，已过时
+\end{spacing}
+
+\subsection{inet\_pton}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+inet\_pton(int domain,char * str,in\_addr|in6\_addr *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{domain:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{str:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }domain = AF\_INET|AF\_INET6 由表现形式转换成网络形式，即点分十进制字符串转换成二进制数字，注意：此函数转换时会考虑本机的大小端特性
+\end{spacing}
+
+\subsection{inet\_ntop}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+inet\_ntop(int domain,in\_addr|in6\_addr *,char * str,socklen\_t addrlen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{domain:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{str:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addrlen:}}
+\paragraph{ \ \ }->(char *) domain = AF\_INET|AF\_INET6 有网络形式转换成表现形式，即整形数字转换成点分十进制字符串，注意：此函数将参数视为网络字节序转换成字符串，所以对于小端法机器，如果你想要提供自己的参数给它，可以先使用htonl再进行传递
+\end{spacing}
+
+\subsection{sethostent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sethostent(int statopen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{statopen:}}
+\paragraph{ \ \ }打开文件网络配置信息文件，如果已打开文件，会将读取的偏移量置为0，如果statopen非0，调用gethostent后文件仍然保持打开状态，mac上打开的是/etc/hosts文件，返回的地址为网络字节序
+\end{spacing}
+
+\subsection{gethostent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gethostent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }->(struct hostent *) 返回文件中的下一个条目 hostent{int h\_addrtype;char * h\_name;char ** h\_addr\_list;char ** h\_aliases;int h\_length}
+\end{spacing}
+
+\subsection{endhostent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endhostent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }关闭网络配置信息文件
+\end{spacing}
+
+\subsection{getnetbyaddr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getnetbyaddr(uint32\_t net,int type)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{net:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{type:}}
+\paragraph{ \ \ }->(struct netent *) netent{char * n\_name; char ** n\_aliases; int n\_addrtype; uint32\_t n\_net(网络序)} 以下五个函数应该是针对本机上ip地址名和ip地址，如LOOPBACK和7f(这里是网络序)
+\end{spacing}
+
+\subsection{getnetbyname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getnetbyname(char * name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }->(struct netent *)
+\end{spacing}
+
+\subsection{setnentent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setnentent(int stayopen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{stayopen:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getnetent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getnetent()
+\end{lstlisting}
+\paragraph{ \ \ }->(struct netent *)
+\end{spacing}
+
+\subsection{endnetent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endnetent(void)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{void:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{getprotobyname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getprotobyname(char * name)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}}
+\paragraph{ \ \ }->(struct protoent *) protoent{char * p\_name; char ** p\_aliases; int p\_proto} 根据协议名获取协议相关信息，如参数为"ip"
+\end{spacing}
+
+\subsection{getprotobynumber}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getprotobynumber(int proto)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{proto:}}
+\paragraph{ \ \ }->(struct protoent *) 根据协议号获取协议相关信息
+\end{spacing}
+
+\subsection{setprotoent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setprotoent(int stayopen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{stayopen:}}
+\paragraph{ \ \ }打开网络协议和网络号信息文件
+\end{spacing}
+
+\subsection{getprotoent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getprotoent()
+\end{lstlisting}
+\paragraph{ \ \ }->(struct protoent *) 获取文件下一条目
+\end{spacing}
+
+\subsection{endprotoent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endprotoent()
+\end{lstlisting}
+\paragraph{ \ \ }关闭文件
+\end{spacing}
+
+\subsection{getservbyname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getservbyname(char * name,char * proto)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{proto:}}
+\paragraph{ \ \ }->(struct servent *) servent(char * s\_name; char ** s\_aliases; int s\_port(网络序); char * s\_proto) proto表示服务名，proto表示协议名，根据服务名(如ssh)和协议名(如tcp)查询信息
+\end{spacing}
+
+\subsection{getservbyport}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getservbyport(int port,char * proto)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{port:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{proto:}}
+\paragraph{ \ \ }->(struct servent *) port表示端口名，proto表示协议名，根据端口名(如23，需要使用网络序)和协议名(tcp)查询信息
+\end{spacing}
+
+\subsection{setservent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setservent(int stayopen)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{stayopen:}}
+\paragraph{ \ \ }打开端口绑定的服务名和端口号信息文件，mac上即/etc/services文件
+\end{spacing}
+
+\subsection{getservent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getservent()
+\end{lstlisting}
+\paragraph{ \ \ }->(struct servent *) 获取文件下一条目
+\end{spacing}
+
+\subsection{endservent}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+endservent()
+\end{lstlisting}
+\paragraph{ \ \ }关闭文件
+\end{spacing}
+
+\subsection{getaddrinfo}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getaddrinfo(char * host,char * service,addrinfo * hint,addrinfo ** res)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{host:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{service:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{hint:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{res:}}
+\paragraph{ \ \ }需要提供主机名，服务名或者两者都提供，如果仅仅提供一个，另一个必须是一个空指针，主机名可以是一个节点名或者点分形式，addrinfo{int ai\_flags; int ai\_family; int ai\_socktype; int ai\_protocol; int ai\_addrlen; int ai\_canonname; sockaddr * ai\_addr,addrinfo * ai\_next} ai\_family = AF\_INET|AF\_INET6|AF\_UNSPEC 意义为获取哪种地址结构 ai\_flags = AI\_ADDRCONFIG|AI\_ALL|AI\_NUMERICHOST|AI\_NUMERICSERV|AI\_PASSIVE|AI\_V4MAPPED  AI\_ADDRCONFIG表示查询配置的地址类型，AI\_ALL表示查找IPC4和IPV6(IPV6需要指定AI\_V4MAPPED)，AI\_NUMERICHOST表示以数字格式指定主机地址，AI\_NUMERICSERV表示以数字形式(端口号)指定服务
+\end{spacing}
+
+\subsection{freeaddrinfo}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+freeaddrinfo(addrinfo *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }一般用于释放getaddrinfo第四个参数指向的addrinfo结构
+\end{spacing}
+
+\subsection{gai\_strerror}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gai\_strerror(int error)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{error:}}
+\paragraph{ \ \ }如果getaddrinfo失败，使用此函数将getaddrinfo的返回值转换成错误信息
+\end{spacing}
+
+\subsection{getnameinfo}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getnameinfo(sockaddr *,addrlen,char * host,hostlen,char * service,servlen,flags)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{*:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addrlen:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{host:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{hostlen:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{service:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{servlen:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags:}}
+\paragraph{ \ \ }flags = NI\_DGRAM|NI\_NAMEREQD|NI\_NOFQDN|NI\_NUMERICHOST|NI\_NUMERICSERV NI\_DGRAM服务基于流而非数据报，NI\_NAMEREQD如果找不到主机名，将其作为一个错误对待，NI\_NUMERICHOST返回主机地址的数字形式，NI\_NUMERICSERV返回服务地址的数字形式(即端口号)
+\end{spacing}
+
+\subsection{getservbyhost}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getservbyhost(char * name,char * protocal)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{name:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{protocal:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{gethostbyname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gethostbyname(port,char * protocal)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{port:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{protocal:}}
+\paragraph{ \ \ }已过时
+\end{spacing}
+
+\subsection{gethostbyaddr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+gethostbyaddr()
+\end{lstlisting}
+\paragraph{ \ \ }已过时
+\end{spacing}
+
+\subsection{sendfile}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sendfile(fd,sockfd,&offset,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&offset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }mac上未成功，且mac上有六个参数
+\end{spacing}
+
+\subsection{getsockname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getsockname(int sockfd,sockaddr * addr,&len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&len:}}
+\paragraph{ \ \ }获取套接字socket所绑定的地址信息并写到addr中，len表示缓冲区的大小，函数返回后len的值会变为向addr写入的字节数
+\end{spacing}
+
+\subsection{getpeername}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getpeername(int sockfd,sockaddr * addr,&len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{addr:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&len:}}
+\paragraph{ \ \ }获取套接字socket对端主机的地址信息并写到addr中，len表示缓冲区的大小，函数返回后len的值会变为向addr写入的字节数
+\end{spacing}
+
+\subsection{getsockopt}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+getsockopt(sockfd,level,optname,&optval,&len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{level:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{optname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&optval:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&len:}}
+\paragraph{ \ \ }level = SOL\_SOCKET optname = SO\_REUSEADDR 获取套接字属性
+\end{spacing}
+
+\subsection{setsockopt}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+setsockopt(int sockfd,int level,int optname,&optval,len)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{level:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{optname:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&optval:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{len:}}
+\paragraph{ \ \ }如果针对的是通用的套接字，将level指定为SO\_SOCKET，optname = SO\_REUSEADDR 这里我只写了一个常用用法，地址复用，能让服务器重启时立即再次绑定同一个地址，optval此时可以是一个指向整数的指针，len表示optval指向数据的大小
+\end{spacing}
+
+\subsection{sendmsg}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+sendmsg(int sockfd,msghdr * msg,int flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{msg:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }可以看作是使用套接字的writev，msghdr{void * msg\_name(地址); socklen\_t msg\_namelen(地址字节数); iovec * msg\_iov IO(缓冲数组); int msg\_iovlen(数组中的元素个数); void * msg\_control(指向控制信息头); socklen\_t msg\_controllen(控制信息的长度); int msg\_flags(接受数据的标志)}，msghdr.control实际上是一个指向cmsghdr的指针，cmsghdr{socklen\_t cmsg\_len; int cmsg\_level; int cmsg\_type} 为了发送文件描述符，将cmsg\_len设置为cmsghdr结构的长度加一个整形的长度(描述符的长度)，cmsg\_level字段设置为SOL\_SOCKET，cmsg\_type设置为SCM\_RIGHTS，用以表明在传送访问权(SCM是套接字级控制信息的缩写)，访问权限仅能通过UNIX域套接字发送，描述符仅随cmsg\_type后存储
+\end{spacing}
+
+\subsection{recvmsg}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+recvmsg(int sockfd,msghdr * msg,int flag)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{sockfd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{msg:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flag:}}
+\paragraph{ \ \ }可以看作是使用套接字的readv, 接受数据后，msghdr中的msg\_flags元素的可能值有MSG\_CTRUNC|MSG\_EOR|MSG\_ERRQUEUE|MSG\_OOB|MSG\_TRUNC MSG\_CTRUNC表示控制数据被截断，MSG\_EOR表示接受记录结束符，MSG\_ERRQUEUE表示接受错误信息作为辅助数据，MSG\_OOB表示接受带外数据，MSG\_TRUNC表示一般数据被截断
+\end{spacing}
+
+\subsection{CMSG\_LEN}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+CMSG\_LEN(unsigned int nbytes)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{nbytes:}}
+\paragraph{ \ \ }->(unsigned int) 返回为nbytes长的数据对象分配的空间大小，内部实现就是sizeof(struct cmsghdr) + nbytes
+\end{spacing}
+
+\subsection{CMSG\_NXTHDR}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+CMSG\_NXTHDR(struct msghdr * mp, struct cmsghdr * cp)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{mp:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{cp:}}
+\paragraph{ \ \ }->(struct cmsghdr *) 返回一个指针，指向与msghdr结构相关联的下一个cmsghdr结构，若当前的cmsghdr已是追后一个，返回NULL
+\end{spacing}
+
+\subsection{CMSG\_FIRSTHDR}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+CMSG\_FIRSTHDR(struct msghdr * mp)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{mp:}}
+\paragraph{ \ \ }->(struct cmsghdr *) 返回一个指针，指向与msghdr结构相关联的第一个cmsghdr结构，若无这样的结构，返回NULL
+\end{spacing}
+
+\subsection{CMSG\_DATA}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+CMSG\_DATA(struct cmsghdr * cp)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{cp:}}
+\paragraph{ \ \ }->(unsigned char *) 返回一个指针，指向与cmsghdr相关联的数据，内部实现就是(unsigned char *)cp + sizeof(struct cmsghdr)
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{终端设置}}
+\subsection{ioctl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ioctl(fd,FIONREAD,&cnt)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{FIONREAD:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{\&cnt:}}
+\paragraph{ \ \ }获取终端输入队列中的未读取字节数
+\end{spacing}
+
+\subsection{tcgetattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tcgetattr(fd,termios *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{tcsetattr}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+tcsetattr(fd,option,termios *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{option:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }option = TCSANOW|TCSADRAIN|TCSAFLUSH 分别为修改立即生效，等处理完终端输出缓冲区的数据后生效，抛弃终端输入缓冲区的数据然后生效
+\end{spacing}
+
+\subsection{ioctl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ioctl(fd,TIOCGWINSZ,winsize *)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{TIOCGWINSZ:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{*:}}
+\paragraph{ \ \ }
+\end{spacing}
+
+\subsection{ctermid}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ctermid(buf)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{buf:}}
+\paragraph{ \ \ }返回进程控制终端的名称
+\end{spacing}
+
+\subsection{isatty}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+isatty(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }判断文件描述符是否同一个终端相关联
+\end{spacing}
+
+\subsection{ttyname}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+ttyname(fd)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}}
+\paragraph{ \ \ }返回这个文件描述符相关联的终端名称
+\end{spacing}
+
+\section{\color[rgb]{0.2,0.4,0.6}{IO多路复用}}
+\subsection{select}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+select(int nfds,fd\_set * readset,fd\_set * writeset,fd\_set * errorset,timeval * intval)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{nfds:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{readset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{writeset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{errorset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{intval:}}
+\paragraph{ \ \ }io多路复用，等待一定长的时间，返回已准备好的文件描述符个数，nfds为当前最大的文件描述符加1，这样就只会检查小于nfds的文件描述符状态，intval等于NULL时，永远等待，直到指定中的一个文件描述符已准备好或者捕捉到一个信号终端此进程，intval->tv\_sec==0\&\&intval->tv\_usec==0，不等待，测试所有文件描述符后立即返回，当intval有其他值时，等待指定的描述和微妙数，当指定描述符中的一个文件描述符准备好时，或者超过指定时间，则立即返回，readset，writeset，errorset分别返回所关心描述符状态的结果，每一个位对应一个描述符，当调用完成后，若对应位为1，则表示该下标对应的描述符为准备好状态，如设置为NULL，则表示对该状态不关心
+\end{spacing}
+
+\subsection{pselect}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+pselect(nfds,fd\_set * readset,fd\_set * writeset,fd\_set * errorset,timespec * intval,sigset\_t * sigmask)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{nfds:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{readset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{writeset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{errorset:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{intval:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{sigmask:}}
+\paragraph{ \ \ }行为类似于select，但提供了sigmask参数用于当函数调用期间设定的信号屏蔽字，当返回时恢复屏蔽信号字
+\end{spacing}
+
+\subsection{FD\_ISSET}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+FD\_ISSET(fd,fd\_set * fdset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{fdset:}}
+\paragraph{ \ \ }若fd在fdset中，返回非0，否则返回0，可用于当select返回后判断fd的状态
+\end{spacing}
+
+\subsection{FD\_CLR}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+FD\_CLR(int fd,fdset * fdset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{fdset:}}
+\paragraph{ \ \ }将fd从fdset中移除
+\end{spacing}
+
+\subsection{FD\_SET}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+FD\_SET(int fd,fdset * fdset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{fdset:}}
+\paragraph{ \ \ }将fd加入fdset
+\end{spacing}
+
+\subsection{FD\_ZERO}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+FD\_ZERO(fdset * fdset)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fdset:}}
+\paragraph{ \ \ }将一个fdset的所有位置为0
+\end{spacing}
+
+\subsection{poll}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+poll(pollfd[],int nfds,int timeout)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{pollfd[]:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{nfds:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{timeout:}}
+\paragraph{ \ \ }pollfd{int fd,short events,short revents} events = POLLIN|POLLRDNORM|POLLRDBAND||POLLPRI|POLLOUT|POLLWRNORM|POLLWRBAND，POLLERR|POLLHUP|POLLNVAL这三个值即使不设置在events中，也可能出现在revents ，nfds指数组元素的个数，timeout为-1时永久等待，为0时测试后立即返回，其余值时为等待timeout毫秒， POLLIN可以不阻塞的读取高优先级数据以外的数据，POLLRDNORM。可以不阻塞的读取普通数据，POLLRDBAND，可以不阻塞的读取优先级数据，可以不阻塞的读取高优先级的数据，POLLOUT，可以不阻塞的写普通数据，POLLWRNORM，同POLLOUT，POLLWRBAND，可以不阻塞的写优先级数据，POLLERR，已出错，POLLHUP，已挂断，POLLNVAL，描述符没有引用一个打开文件
+\end{spacing}
+
+\subsection{fcntl}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+fcntl(int fd,F\_SETFL,flags|O\_ASYNC)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{fd:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{F\_SETFL:}} \\
+{\large\color[rgb]{0.2,0.4,0.6}{flags|O\_ASYNC:}}
+\paragraph{ \ \ }设置信号IO，通过fcntl(fd,F\_SETOWN,pid)设置接收SIGIO的进程，不能对终端设备使用
+\end{spacing}
+
+\subsection{}
+\begin{spacing}{2.0}
+\lstset{language=C,numbers=none}
+\begin{lstlisting}
+((int)
+\end{lstlisting}
+{\large\color[rgb]{0.2,0.4,0.6}{(int:}}
+\paragraph{ \ \ }\&((struct sockaddr\_un *)0)->sun\_path) 可用于计算结构体内成员偏移量，等价于offsetof
+\end{spacing}
+
+\end{CJK}
+\end{document}

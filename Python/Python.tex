@@ -1,0 +1,247 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{minted}
+\usepackage{fancyhdr}
+\usepackage[left=1.2in,right=1.2in,top=1in,bottom=0.9in]{geometry}
+%\usepackage[total={6.5in,8.75in},
+%top=1.2in, left=0.9in, includefoot]{geometry}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{setspace} %行间距
+\usepackage{lmodern} %下行的使用需要这行
+\usepackage[T1]{fontenc} %用于处理下划线等输出
+\usepackage{textcomp} %\textasciitilde中划线 \textunderscore下划线
+\usepackage{chngpage} %使用adjustwidth环境偏移整个块 
+\usepackage{cite} %引用bib中的文献
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[RO,LE]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+%页眉横线宽度
+
+%\setboolean{@twoside}{true} %从oneside转换为twoside，这样才能有单数页和双数页码
+
+
+\begin{document}
+\title{广度优先搜索与深度优先搜索}
+\author{邓岩\footnote{计算机11605} \\ 1604210502}
+\date{2018 年 11 月 13 日}
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\setminted[c++,python]{
+			   mathescape,
+               %linenos, %行号
+               numbersep=10pt, %行号与代码距离
+               autogobble, %去掉前两列
+               %frame=lines, %边缘线
+               framesep=5pt, %代码与框架距离
+}
+
+
+\section{\color[rgb]{0.2,0.4,0.6}{算法描述}}
+\subsection{广度优先搜索}
+\begin{spacing}{2.0}
+广度优先搜索是一种盲目搜寻法，目的是系统地展开并检查图中的所有节点，以找寻结果。换句话说，它并不考虑结果的可能位置，彻底地搜索整张图，直到找到结果为止。
+\par 从算法的观点，所有因展开节点而得到的子节点都会被加进一个先进先出的队列中。一般的实现里，其邻居节点尚未被检验过的节点会被放置在一个被称为open的容器中（例如队列或是链表），而被检验过的节点则被放置在被称为closed的容器中。
+\end{spacing}
+
+\subsection{深度优先搜索}
+\begin{spacing}{2.0}
+深度优先搜索使用的策略就像是其名字就像其名字所隐含的: 只要可能，就在途中尽量深入。深度优先搜索总是对最近才发现的结点v的出发边进行探索，直到该节点的所有出发边都被发现为止。一旦节点v的所有出发边都被发现，搜索则“回溯”到v的前驱节点(v是经过该节点才被发现的)，来搜索该前驱节点的出发边。该过程一直持续到从源节点可以达到从源节点可以达到的所有节点都被发现为止。如果还存在尚未发现的节点，则深度优先搜索将从这些未被发现的结点中任选一个作为新的源节点，并重复同样的搜索过程。该算法重复整个过程，直到图中的所有节点都被发现为止。
+\end{spacing}
+
+\newpage
+
+\section{\color[rgb]{0.2,0.4,0.6}{程序}}
+\subsection{广度优先搜索}
+
+\begin{adjustwidth}{2em}{0em}
+\begin{minted}[linenos]{python}
+def BFS(maze):
+    num = 2
+    queue = [(0,0)]
+    recall = maze.a.clone()
+    recall[0, 0] = num
+    while (len(queue)):
+        cur = queue.pop()
+        num = recall[cur[0], cur[1]] + 1
+        for i, j in [(0, 1),(1, 0),(-1, 0),(0, -1)]:
+            x = cur[0] + i
+            y = cur[1] + j
+            if (x >= 0 and x < maze.a.numRows() and y >= 0 and
+                     y < maze.a.numCols() and recall[x, y] == 1):
+                queue.insert(0, (x, y))
+                recall[x, y] = num
+    return recall
+\end{minted}
+\end{adjustwidth}
+
+\subsection{深度优先搜索}
+
+\begin{adjustwidth}{2em}{0em}
+\begin{minted}[linenos]{python}
+def DFS(maze):
+    num = 2
+    queue = [(0, 0)]
+    recall = maze.a.clone()
+    recall[0, 0] = num
+    while (len(queue)):
+        cur = queue.pop()
+        num = recall[cur[0], cur[1]] + 1
+        for i, j in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
+            x = cur[0] + i
+            y = cur[1] + j
+            if (x >= 0 and x < maze.a.numRows() and y >= 0 and
+                     y < maze.a.numCols() and recall[x, y] == 1):
+                queue.append((x, y))
+                recall[x, y] = num
+    return recall
+\end{minted}
+\end{adjustwidth}
+
+\subsection{主程序}
+\begin{minted}[linenos]{python}
+#
+# Created by dengyan on 2018/11/12.
+#
+from myarray2d import *
+from graphics import *
+
+class Maze:
+    def __init__(self):
+        self.a = Array2D(20, 20)
+        for i in range(20):
+            for j in range(20):
+                self.a[i, j] = 1
+            self.a[i, round(random.random() * 20) % 20] = 0
+            self.a[i, round(random.random() * 20) % 20] = 0
+            self.a[i, round(random.random() * 20) % 20] = 0
+            self.a[i, round(random.random() * 20) % 20] = 0
+            self.a[i, round(random.random() * 20) % 20] = 0
+        self.a[0, 0] = 1
+        self.a[19, 19] = 1
+
+    def draw(self):
+        self.win = GraphWin("maze", 400, 400)
+        self.win.setCoords(0, 0, 400, 400)
+        for i in range(20):
+            for j in range(20):
+                if (self.a[i, j] == 0):
+                    p2 = Rectangle(Point(j * 20, i * 20),
+                        Point(j * 20 + 20, i * 20 + 20))
+                    p2.setFill("red")
+                    p2.setOutline("black")
+                    p2.draw(self.win)
+                else:
+                    p1 = Rectangle(Point(j * 20, i * 20), 
+                        Point(j * 20 + 20, i * 20 + 20))
+                    p1.setFill("green")
+                    p1.setOutline("black")
+                    p1.draw(self.win)
+        return self.win
+
+    def close(self):
+        self.win.close()
+
+    def print(self):
+        for i in range(self.a.numRows()):
+            for j in range(self.a.numCols()):
+                print(self.a[i, j],end='')
+            print()
+
+def path_maze(recall, start, end, win):
+    if start == end:
+        print(end)
+    elif recall[end[0],end[1]] == 0:
+        print("can't pass")
+    else:
+        for i, j in [(0, 1),(1, 0),(-1, 0),(0, -1)]:
+            x = end[0] + i
+            y = end[1] + j
+            if (x >= 0 and x <= 19 and y >= 0 and y <= 19):
+                if recall[x, y] == recall[end[0], end[1]] - 1:
+                    line = Line(Point(y * 20 + 10, x * 20 + 10),
+                        Point(end[1] * 20 + 10, end[0] * 20 + 10))
+                    line.setArrow("last")
+                    line.setOutline("white")
+                    line.draw(win)
+                    break
+        path_maze(recall, start, (x, y), win)
+        print(end)
+
+
+
+def BFS(maze):
+    num = 2
+    queue = [(0,0)]
+    recall = maze.a.clone()
+    recall[0, 0] = num
+    while (len(queue)):
+        cur = queue.pop()
+        num = recall[cur[0], cur[1]] + 1
+        for i, j in [(0, 1),(1, 0),(-1, 0),(0, -1)]:
+            x = cur[0] + i
+            y = cur[1] + j
+            if (x >= 0 and x < maze.a.numRows() and y >= 0 and
+                     y < maze.a.numCols() and recall[x, y] == 1):
+                queue.insert(0, (x, y))
+                recall[x, y] = num
+    return recall
+
+def DFS(maze):
+    num = 2
+    queue = [(0, 0)]
+    recall = maze.a.clone()
+    recall[0, 0] = num
+    while (len(queue)):
+        cur = queue.pop()
+        num = recall[cur[0], cur[1]] + 1
+        for i, j in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
+            x = cur[0] + i
+            y = cur[1] + j
+            if (x >= 0 and x < maze.a.numRows() and y >= 0 and 
+                    y < maze.a.numCols() and recall[x, y] == 1):
+                queue.append((x, y))
+                recall[x, y] = num
+    return recall
+
+def main():
+    a = Maze()
+    a.draw()
+    c = input("广度优先请按1，否则深度优先:\n")
+    if (c == '1'):
+        recall = BFS(a)
+    else:
+        recall = DFS(a)
+    path_maze(recall, (0, 0), (19, 19), a.win)
+    input("Please enter any key to exit")
+    a.close()
+
+if __name__ == '__main__':
+    main()
+\end{minted}
+
+\newpage
+\section{\color[rgb]{0.2,0.4,0.6}{应用与拓展}}
+\subsection{广度优先搜索}
+\begin{itemize}
+	\item 最短路径
+	\item 最小生成树
+\end{itemize}
+\subsection{深度优先搜索}
+\begin{itemize}
+	\item 拓扑排序
+	\item 有向图分解为强连通分量
+\end{itemize}
+
+\newpage
+%\cite{Thomas2013算法导论} 引用文件
+\nocite{*} %显示引用文件中的条目
+\bibliographystyle{unsrt}
+\bibliography{Python}
+
+
+\end{document}

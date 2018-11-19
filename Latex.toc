@@ -1,0 +1,20 @@
+\contentsline {section}{\numberline {1}\color [rgb]{0.2,0.4,0.6} {第一章 Latex的插图与项目符号}}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}行间距}{3}{subsection.1.1}
+\contentsline {paragraph}{ \ \ }{3}{section*.2}
+\contentsline {subsection}{\numberline {1.2}插图}{3}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}项目符号}{3}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}表格}{3}{subsection.1.4}
+\contentsline {section}{\numberline {2}\color [rgb]{0.2,0.4,0.6} {第二章 数学公式的使用}}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}行内形式和外部形式}{4}{subsection.2.1}
+\contentsline {paragraph}{}{4}{section*.3}
+\contentsline {paragraph}{}{4}{section*.4}
+\contentsline {subsection}{\numberline {2.2}分支形式}{4}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}矩阵形式}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}方程变换}{4}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}方程中使用普通文本}{4}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}导数}{4}{subsection.2.6}
+\contentsline {subsection}{\numberline {2.7}求和}{4}{subsection.2.7}
+\contentsline {subsection}{\numberline {2.8}积分}{4}{subsection.2.8}
+\contentsline {subsection}{\numberline {2.9}三角函数}{4}{subsection.2.9}
+\contentsline {section}{\numberline {3}\color [rgb]{0.2,0.4,0.6}{画图}}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}坐标轴}{5}{subsection.3.1}

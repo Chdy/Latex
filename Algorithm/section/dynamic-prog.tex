@@ -1,0 +1,219 @@
+\section{\color[rgb]{0.2,0.4,0.6}{动态规划}}
+\subsection{切钢条}
+\begin{minted}[linenos,xleftmargin=2em,
+			   xrightmargin=0em,]{c}
+//
+// Created by 邓岩 on 2018/11/3.
+//
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+
+//动态规划切钢条
+
+void bottom_to_up(int n) //自底向上法
+{
+    int rr[11] = {0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
+    int * r = (int *)calloc(n + 1, sizeof(int));
+    memcpy(r, rr, sizeof(int) * 11);
+    int * s = (int *)calloc(n + 1, sizeof(int));
+
+    for (int i = 1; i < n+1; ++i) {
+        for (int j = 0; j <= i; ++j) {
+            if (r[i] < r[j] + r[i - j]) {
+                r[i] = r[j] + r[i - j];
+                s[i] = j;
+            }
+        }
+    }
+    printf("  长度: ");
+    for (int k = 0; k < n + 1; ++k) {
+        printf("%3d ", k);
+    }
+    printf("\n  价格: ");
+    for (int k = 0; k < n + 1; ++k) {
+        printf("%3d ", r[k]);
+    }
+    printf("\n  切割: ");
+    for (int k = 0; k < n + 1; ++k) {
+        printf("%3d ", s[k]);
+    }
+}
+
+int up_to_bottom(int n, int * rr, int * r) //带备忘的自顶向下法
+{
+    if (r[n] > 0)
+        return r[n];
+    for (int i = 1; i < n + 1; ++i) {
+        if (r[n] < rr[i] + up_to_bottom(n - i, rr, r)) {
+            r[n] = rr[i] + up_to_bottom(n - i, rr, r);
+        }
+    }
+    return r[n];
+}
+
+int main(void)
+{
+    int n ;
+    printf("请输入钢条长度: ");
+    scanf("%d", &n);
+    int t[11] = {0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
+    int * rr = (int *)calloc(n + 1, sizeof(int));
+    memcpy(rr, t, sizeof(int) * 11);
+    int * r = (int *)calloc(n + 1, sizeof(int));
+    printf("%d", up_to_bottom(n, rr, r));
+}
+\end{minted}
+
+\subsection{矩阵链乘法}
+\begin{minted}[linenos,xleftmargin=2em,
+			   xrightmargin=0em,]{c}
+//
+// Created by 邓岩 on 2018/11/3.
+//
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+
+//动态规划处理矩阵链乘法
+
+
+void print_optimal_parens(int (*s)[7], int i, int j) //这里的7为二维数组s的列数
+{
+    if (i == j)
+        printf("A%d", i);
+    else {
+        printf("(");
+        print_optimal_parens(s, i, s[i][j]);
+        print_optimal_parens(s, s[i][j] + 1, j);
+        printf(")");
+    }
+}
+
+void matrix_chain_order(const int * p, int n)
+{
+    int j;
+    int (*m)[n + 1] = calloc((n + 1) * (n + 1), sizeof(int));
+    int (*s)[n + 1] = calloc((n + 1) * (n + 1), sizeof(int));
+    for (int l = 2; l <= n; ++l) {
+        for (int i = 1; i <= n - l + 1; ++i) {
+            j = i + l - 1;
+            m[i][j] = INT32_MAX;
+            for (int k = i; k < j; ++k) {
+                int q = m[i][k] + m[k + 1][j] + p[i - 1] * p[k] * p[j];
+                if (q < m[i][j]) {
+                    m[i][j] = q;
+                    s[i][j] = k;
+                }
+            }
+        }
+    }
+    for (int i1 = 0; i1 < n + 1; ++i1) {
+        for (int i = 0; i < n + 1; ++i) {
+            printf("%5d ", m[i1][i]);
+        }
+        for (int i = 0; i < n + 1; ++i) {
+            printf("%5d ", s[i1][i]);
+        }
+        printf("\n");
+    }
+    print_optimal_parens(s, 1, n);
+    free(m);
+    free(s);
+}
+
+int main(void)
+{
+    int p[] = {30, 35, 15, 5, 10, 20, 25};
+    //有六个矩阵，p[0]存放着第一个矩阵的行，其余的p[i]表示第i个矩阵的列数
+    matrix_chain_order(p, 6);
+}
+\end{minted}
+
+\subsection{最长公共子序列}
+\begin{minted}[linenos,xleftmargin=2em,
+			   xrightmargin=0em,
+]{c}
+//
+// Created by 邓岩 on 2018/11/3.
+//
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+
+void LCS_PRINT(char ** t, char * y, int i, int j)
+{
+    int n = strlen(y);
+    char (*b)[n + 1] = t;
+    if (i == 0 || j == 0)
+        return;
+    if (b[i][j] == '\\') {
+        LCS_PRINT(t, y, i - 1, j - 1);
+        printf("%c", y[j - 1]);
+    } else if (b[i][j] == '|') {
+        LCS_PRINT(t, y, i - 1, j);
+    } else {
+        LCS_PRINT(t, y, i, j - 1);
+    }
+}
+
+void LCS_LENGTH(char * x, char * y)
+{
+    int len1 = strlen(x);
+    int len2 = strlen(y);
+    char (*b)[len2 + 1] = calloc((len1 + 1) * (len2 + 1), sizeof(char));
+    int (*c)[len2 + 1] = calloc((len1 + 1) * (len2 + 1), sizeof(int));
+    for (int i = 1; i <= len1; ++i) {
+        for (int j = 1; j <= len2; ++j) {
+            if (*(x + i - 1) == *(y + j - 1)) {
+                c[i][j] = c[i - 1][j - 1] + 1;
+                b[i][j] = '\\';
+            } else if (c[i - 1][j] >= c[i][j - 1]) { 
+            //c[i][j]，c[i - 1][j]，c[i][j - 1]是相邻的，也就是说箭头指向有较大最大LCS的方向
+                c[i][j] = c[i - 1][j];
+                b[i][j] = '|';
+            } else {
+                c[i][j] = c[i][j - 1];
+                b[i][j] = '-';
+            }
+        }
+    }
+    /*for (int i = 0; i <= len1; ++i) {
+        for (int j = 0; j <= len2; ++j) {
+            printf("%d ", c[i][j]);
+        }
+        for (int j = 0; j <= len2; ++j) {
+            printf("%c ", b[i][j]);
+        }
+        printf("\n");
+    }*/
+    LCS_PRINT(b, y, len1, len2);
+}
+
+int main(void)
+{
+    char * file1 = "/Users/dengyan/exam.c";
+    char * file2 = "/Users/dengyan/exam";
+    struct stat stat1;
+    stat(file1, &stat1);
+    char * x = (char *)malloc(stat1.st_size + 1);
+    int fdx = open(file1, O_RDONLY);
+    read(fdx, x, stat1.st_size);
+    x[stat1.st_size] = 0;
+    stat(file2, &stat1);
+    char * y = (char *)malloc(stat1.st_size + 1);
+    int fdy = open(file2, O_RDONLY);
+    read(fdy, y, stat1.st_size);
+    y[stat1.st_size] = 0;
+
+    //char x[100] = "ABCBDAB";
+    //char y[100] = "BDCABA";
+    LCS_LENGTH(x, y);
+}
+\end{minted}
