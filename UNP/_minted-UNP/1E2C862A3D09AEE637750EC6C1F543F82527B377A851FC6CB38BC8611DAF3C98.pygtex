@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{//此结构在mac上为\PYGZlt{}netinet6/in6.h\PYGZgt{}中}
+\PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}in6} \PYG{p}{\PYGZob{}}
+    \PYG{n}{\PYGZus{}\PYGZus{}uint8\PYGZus{}t}   \PYG{n}{sin6\PYGZus{}len}\PYG{p}{;} \PYG{c+c1}{//通常不需要设置和检查}
+    \PYG{n}{sa\PYGZus{}family\PYGZus{}t} \PYG{n}{sin6\PYGZus{}family}\PYG{p}{;} \PYG{c+c1}{//地址族(AF\PYGZus{}INET6)}
+    \PYG{n}{in\PYGZus{}port\PYGZus{}t}   \PYG{n}{sin6\PYGZus{}port}\PYG{p}{;}
+    \PYG{n}{\PYGZus{}\PYGZus{}uint32\PYGZus{}t}  \PYG{n}{sin6\PYGZus{}flowinfo}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{in6\PYGZus{}addr}\PYG{o}{\PYGZca{}\PYGZca{}}\PYG{n}{Isin6\PYGZus{}addr}\PYG{p}{;}
+    \PYG{n}{\PYGZus{}\PYGZus{}uint32\PYGZus{}t}  \PYG{n}{sin6\PYGZus{}scope\PYGZus{}id}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

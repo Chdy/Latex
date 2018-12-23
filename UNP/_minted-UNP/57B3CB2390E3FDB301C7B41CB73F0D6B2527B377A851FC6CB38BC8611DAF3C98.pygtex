@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{WIFCONTINUED}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);} \PYG{c+c1}{//需要options设置WCONTINUED，返回使子进程恢复的信号量，mac上无效}
+\PYG{n}{WIFSTOPPED}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);} \PYG{c+c1}{//只要当options设置WUNTRACED才有用，返回引起停止的信号值}
+\PYG{n}{WIFSIGNALED}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);} \PYG{c+c1}{//返回引起杀死的信号值}
+\PYG{n}{WIFEXITED}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);} \PYG{c+c1}{//如果子进程正常退出，返回退出值}
+\PYG{n}{WEXITSTATUS}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);}
+\end{Verbatim}

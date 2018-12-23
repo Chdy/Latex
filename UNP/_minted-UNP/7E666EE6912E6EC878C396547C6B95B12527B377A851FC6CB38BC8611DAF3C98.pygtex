@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * 由于sockaddr不足以容纳所有的地址结构，所以新的通用套接字结构产生了}
+\PYG{c+cm}{ * 它足以容纳所有类型的套接字地址结构，而且满足最苛刻的对齐要求}
+\PYG{c+cm}{ * 但是需要将其转换为特定的类型后，才可以访问其内部字段}
+\PYG{c+cm}{ */}
+\PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}storage} \PYG{p}{\PYGZob{}}
+    \PYG{n}{\PYGZus{}\PYGZus{}uint8\PYGZus{}t}   \PYG{n}{ss\PYGZus{}len}\PYG{p}{;}
+    \PYG{n}{sa\PYGZus{}family\PYGZus{}t} \PYG{n}{ss\PYGZus{}family}\PYG{p}{;}
+    \PYG{k+kt}{char}        \PYG{n}{\PYGZus{}\PYGZus{}ss\PYGZus{}pad1}\PYG{p}{[}\PYG{n}{\PYGZus{}SS\PYGZus{}PAD1SIZE}\PYG{p}{];}
+    \PYG{n}{\PYGZus{}\PYGZus{}int64\PYGZus{}t}   \PYG{n}{\PYGZus{}\PYGZus{}ss\PYGZus{}align}\PYG{p}{;}
+    \PYG{k+kt}{char}        \PYG{n}{\PYGZus{}\PYGZus{}ss\PYGZus{}pad2}\PYG{p}{[}\PYG{n}{\PYGZus{}SS\PYGZus{}PAD2SIZE}\PYG{p}{];}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

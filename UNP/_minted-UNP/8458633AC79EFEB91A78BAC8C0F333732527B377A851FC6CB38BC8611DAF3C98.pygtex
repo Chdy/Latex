@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{hostent} \PYG{o}{*}\PYG{n+nf}{gethostbyaddr}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{addr}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{n}{len}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{type}\PYG{p}{);}
+\end{Verbatim}

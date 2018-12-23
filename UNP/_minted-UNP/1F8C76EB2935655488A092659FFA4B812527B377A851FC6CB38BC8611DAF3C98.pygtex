@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}/Users/dengyan/ClionProjects/Linux/linux.h\PYGZgt{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{main}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{argc}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{argv}\PYG{p}{[])} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{sockfd}\PYG{p}{,} \PYG{n}{n}\PYG{p}{;}
+    \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{4097}\PYG{p}{];}
+    \PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}in} \PYG{n}{servaddr}\PYG{p}{;}
+
+    \PYG{k}{if} \PYG{p}{((}\PYG{n}{sockfd} \PYG{o}{=} \PYG{n}{socket}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{n}{SOCK\PYGZus{}STREAM}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}sys}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}socket error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{n}{bzero}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{));}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}family} \PYG{o}{=} \PYG{n}{AF\PYGZus{}INET}\PYG{p}{;}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}port} \PYG{o}{=} \PYG{n}{htons}\PYG{p}{(}\PYG{l+m+mi}{13333}\PYG{p}{);}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{inet\PYGZus{}pton}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}127.0.0.1\PYGZdq{}}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}addr}\PYG{p}{)} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}inet\PYGZus{}pton error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{connect}\PYG{p}{(}\PYG{n}{sockfd}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}sys}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}connect error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{k}{while} \PYG{p}{((}\PYG{n}{n} \PYG{o}{=} \PYG{n}{read}\PYG{p}{(}\PYG{n}{sockfd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{l+m+mi}{4096}\PYG{p}{))} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{n}{write}\PYG{p}{(}\PYG{n}{STDOUT\PYGZus{}FILENO}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{n}{n}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

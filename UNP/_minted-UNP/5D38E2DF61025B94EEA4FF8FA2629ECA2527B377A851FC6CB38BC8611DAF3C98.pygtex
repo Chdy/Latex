@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * h代表主机(host)}
+\PYG{c+cm}{ * n代表网络(network)}
+\PYG{c+cm}{ * l代表32位}
+\PYG{c+cm}{ * s代表16位}
+\PYG{c+cm}{ * 表示在主机字节序与网络字节序之间进行转换}
+\PYG{c+cm}{ */}
+
+\PYG{k+kt}{uint32\PYGZus{}t} \PYG{n+nf}{htonl}\PYG{p}{(}\PYG{k+kt}{uint32\PYGZus{}t} \PYG{n}{hostlong}\PYG{p}{);}
+
+\PYG{k+kt}{uint16\PYGZus{}t} \PYG{n+nf}{htons}\PYG{p}{(}\PYG{k+kt}{uint16\PYGZus{}t} \PYG{n}{hostshort}\PYG{p}{);}
+
+\PYG{k+kt}{uint32\PYGZus{}t} \PYG{n+nf}{ntohl}\PYG{p}{(}\PYG{k+kt}{uint32\PYGZus{}t} \PYG{n}{netlong}\PYG{p}{);}
+
+\PYG{k+kt}{uint16\PYGZus{}t} \PYG{n+nf}{ntohs}\PYG{p}{(}\PYG{k+kt}{uint16\PYGZus{}t} \PYG{n}{netshort}\PYG{p}{);}
+\end{Verbatim}

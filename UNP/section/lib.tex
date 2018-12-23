@@ -1,0 +1,145 @@
+\subsection{netinet/in.h}
+\subsubsection{in\li addr}
+\begin{minted}{c}
+struct in_addr {
+    in_addr_t s_addr; //IPv4地址，通常为uint32_t
+};
+/*
+ * 需要注意的是，对32位IPv4地址进行访问时有两种不同的访问方法
+ * 一种是访问结构体，另一种是访问结构体中的成员
+ * 在当中参数时需要小心处理，因为编译器处理结构体和
+ * 无符号整形采用不同的方式，结构体作为左值时无法随意赋值
+ * 所以如果想直接对地址赋值需要访问结构体中的成员
+ */
+\end{minted}
+
+\subsubsection{sockaddr\li in}
+\begin{minted}{c}
+struct sockaddr_in {
+    __uint8_t   sin_len; //通常不需要设置和检查
+    sa_family_t sin_family; //地址族(AF_INET)，通常为8位的无符号整形
+    in_port_t   sin_port; //TCP或UDP端口，一般为uint16_t
+    struct in_addr sin_addr; //IPv4地址，通常为uint32_t
+    char        sin_zero[8]; //用于填充，达到最小16个字节
+};
+\end{minted}
+
+\subsubsection{in6\li addr}
+\begin{minted}{c}
+//此结构在mac上为<netinet6/in6.h>中
+typedef struct in6_addr {
+    union {
+        __uint8_t   __u6_addr8[16];
+        __uint16_t  __u6_addr16[8];
+        __uint32_t  __u6_addr32[4];
+    } __u6_addr; /* 128-bit IP6 address */
+} in6_addr_t;
+//通配地址赋值给此结构体可以使用in6_addr = in6addr_any
+\end{minted}
+
+\subsubsection{sockaddr\li in6}
+\begin{minted}{c}
+//此结构在mac上为<netinet6/in6.h>中
+struct sockaddr_in6 {
+    __uint8_t   sin6_len; //通常不需要设置和检查
+    sa_family_t sin6_family; //地址族(AF_INET6)
+    in_port_t   sin6_port;
+    __uint32_t  sin6_flowinfo;
+    struct in6_addr	sin6_addr;
+    __uint32_t  sin6_scope_id;
+};
+\end{minted}
+
+\subsection{sys/socket.h}
+\subsubsection{sockaddr}
+\begin{minted}{c}
+//16个字节，不足以容纳容纳IPv6结构
+struct sockaddr {
+    __uint8_t    sa_len;
+    sa_family_t sa_family;
+    char        sa_data[14];
+};
+\end{minted}
+
+\subsubsection{sockaddr\li storage}
+\begin{minted}{c}
+/*
+ * 由于sockaddr不足以容纳所有的地址结构，所以新的通用套接字结构产生了
+ * 它足以容纳所有类型的套接字地址结构，而且满足最苛刻的对齐要求
+ * 但是需要将其转换为特定的类型后，才可以访问其内部字段
+ */
+struct sockaddr_storage {
+    __uint8_t   ss_len;
+    sa_family_t ss_family;
+    char        __ss_pad1[_SS_PAD1SIZE];
+    __int64_t   __ss_align;
+    char        __ss_pad2[_SS_PAD2SIZE];
+};
+\end{minted}
+
+\subsubsection{iovec}
+\begin{minted}{c}
+struct iovec {
+    void  *iov_base;    /* 缓冲区地址 */
+    size_t iov_len;     /* 缓冲区有效数据长度 */
+};
+\end{minted}
+
+\subsubsection{msghdr}
+\begin{minted}{c}
+struct msghdr {
+    void         *msg_name;       /* 地址 */
+    socklen_t     msg_namelen;    /* 地址长度 */
+    struct iovec *msg_iov;        /* 用于散步读聚集写的数组 */
+    size_t        msg_iovlen;     /* 数组长度 */
+    void         *msg_control;    /* 指向控制信息头 */
+    size_t        msg_controllen; /* 控制信息大小 */
+    int           msg_flags;      /* 标志 */
+};
+\end{minted}
+
+\subsection{netdb.h}
+\subsubsection{hostent}
+\begin{minted}{c}
+struct hostent {
+    char  *h_name;            /* 正式主机名 */
+    char **h_aliases;         /* 别名列表 */
+    int    h_addrtype;        /* 主机地址类型: AF_INET */
+    int    h_length;          /* 地址长度: 4 */
+    char **h_addr_list;       /* 其中的每个指针指向in_addr结构体 */
+}
+\end{minted}
+
+\subsubsection{servent}
+\begin{minted}{c}
+struct servent {
+    char  *s_name;       /* 正式服务名 */
+    char **s_aliases;    /* 别名列表 */
+    int    s_port;       /* 端口号(网络序) */
+    char  *s_proto;      /* 使用的协议名 */
+}
+\end{minted}
+
+\subsubsection{addrinfo}
+\begin{minted}{c}
+struct addrinfo {
+    int              ai_flags; /* 控制返回信息 */
+    int              ai_family; /* AF_INET|AF_INET6|AF_UNSPEC 意义为获取哪种地址结构 */
+    int              ai_socktype; /* SOCK_XXX */
+    int              ai_protocol; /* 一般为0 */
+    socklen_t        ai_addrlen; /* ai_addr长度 */
+    struct sockaddr *ai_addr; /* 存放地址信息 */
+    char            *ai_canonname;
+    struct addrinfo *ai_next; /* 指向链表上的下一个addrinfo */
+};
+
+/* ------------ai_flags------------
+ * AI_PASSIVE 套接字将用于被动打开(服务器端)
+ * AI_CANONNAME 告知getaddrinfo返回主机的规范名字
+ * AI_V4MAPPED 如果ai_family指定的是IPv6，那么如果没有可用的AAAA记录，则返回一条IPv4映射的IPv6地址)
+ * AI_ADDRCONFIG表示按照主机配置配置选择返回的地址类型
+ * AI_ALL表示查找IPv4和IPv6(IPv6需要指定AI_V4MAPPED后还会返回IPv4映射的IPv6地址)
+ * AI_NUMERICHOST表示以数字格式指定主机地址
+ * AI_NUMERICSERV表示以数字形式(端口号)指定服务
+ */
+\end{minted}

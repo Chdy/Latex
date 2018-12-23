@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{getaddrinfo}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{node}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{service}\PYG{p}{,} \PYG{k}{const} \PYG{k}{struct} \PYG{n}{addrinfo} \PYG{o}{*}\PYG{n}{hints}\PYG{p}{,} \PYG{k}{struct} \PYG{n}{addrinfo} \PYG{o}{**}\PYG{n}{res}\PYG{p}{);}
+\end{Verbatim}

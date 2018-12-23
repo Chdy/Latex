@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{servent} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{char}  \PYG{o}{*}\PYG{n}{s\PYGZus{}name}\PYG{p}{;}       \PYG{c+cm}{/* 正式服务名 */}
+    \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{s\PYGZus{}aliases}\PYG{p}{;}    \PYG{c+cm}{/* 别名列表 */}
+    \PYG{k+kt}{int}    \PYG{n}{s\PYGZus{}port}\PYG{p}{;}       \PYG{c+cm}{/* 端口号(网络序) */}
+    \PYG{k+kt}{char}  \PYG{o}{*}\PYG{n}{s\PYGZus{}proto}\PYG{p}{;}      \PYG{c+cm}{/* 使用的协议名 */}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

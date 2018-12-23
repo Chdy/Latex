@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{fcntl}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{fd}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{cmd}\PYG{p}{,} \PYG{p}{...);}
+\end{Verbatim}

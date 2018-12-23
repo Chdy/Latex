@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{//此结构在mac上为\PYGZlt{}netinet6/in6.h\PYGZgt{}中}
+\PYG{k}{typedef} \PYG{k}{struct} \PYG{n}{in6\PYGZus{}addr} \PYG{p}{\PYGZob{}}
+    \PYG{k}{union} \PYG{p}{\PYGZob{}}
+        \PYG{n}{\PYGZus{}\PYGZus{}uint8\PYGZus{}t}   \PYG{n}{\PYGZus{}\PYGZus{}u6\PYGZus{}addr8}\PYG{p}{[}\PYG{l+m+mi}{16}\PYG{p}{];}
+        \PYG{n}{\PYGZus{}\PYGZus{}uint16\PYGZus{}t}  \PYG{n}{\PYGZus{}\PYGZus{}u6\PYGZus{}addr16}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{];}
+        \PYG{n}{\PYGZus{}\PYGZus{}uint32\PYGZus{}t}  \PYG{n}{\PYGZus{}\PYGZus{}u6\PYGZus{}addr32}\PYG{p}{[}\PYG{l+m+mi}{4}\PYG{p}{];}
+    \PYG{p}{\PYGZcb{}} \PYG{n}{\PYGZus{}\PYGZus{}u6\PYGZus{}addr}\PYG{p}{;} \PYG{c+cm}{/* 128\PYGZhy{}bit IP6 address */}
+\PYG{p}{\PYGZcb{}} \PYG{n}{in6\PYGZus{}addr\PYGZus{}t}\PYG{p}{;}
+\PYG{c+c1}{//通配地址赋值给此结构体可以使用in6\PYGZus{}addr = in6addr\PYGZus{}any}
+\end{Verbatim}

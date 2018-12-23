@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{pselect}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{nfds}\PYG{p}{,} \PYG{n}{fd\PYGZus{}set} \PYG{o}{*}\PYG{n}{readset}\PYG{p}{,} \PYG{n}{fd\PYGZus{}set} \PYG{o}{*}\PYG{n}{writeset}\PYG{p}{,} \PYG{n}{fd\PYGZus{}set} \PYG{o}{*}\PYG{n}{exceptset}\PYG{p}{,} \PYG{k}{const} \PYG{k}{struct} \PYG{n}{timespec} \PYG{o}{*}\PYG{n}{timeout}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{sigset\PYGZus{}t} \PYG{o}{*}\PYG{n}{sigmask}\PYG{p}{);}
+\end{Verbatim}

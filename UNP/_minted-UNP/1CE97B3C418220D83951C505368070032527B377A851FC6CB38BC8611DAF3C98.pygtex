@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}strings.h\PYGZgt{}}
+\PYG{c+c1}{//将地址s开始的n个字节全部置为0}
+\PYG{k+kt}{void} \PYG{n+nf}{bzero}\PYG{p}{(}\PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+
+\PYG{c+c1}{//将src开始的n个字节拷贝到dest地址开始的n个字节}
+\PYG{k+kt}{void} \PYG{n+nf}{bcopy}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{src}\PYG{p}{,} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{dest}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+
+\PYG{c+c1}{//比较s1和s2开始的n个字节}
+\PYG{k+kt}{int} \PYG{n+nf}{bcmp}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s1}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s2}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+
+\PYG{c+c1}{//以一个常量填充s开始的n个字节}
+\PYG{k+kt}{void} \PYG{o}{*}\PYG{n+nf}{memset}\PYG{p}{(}\PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{c}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+
+\PYG{c+c1}{//将src开始的n个字节拷贝到dest开始的n个字节}
+\PYG{k+kt}{void} \PYG{o}{*}\PYG{n+nf}{memcpy}\PYG{p}{(}\PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{dest}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{src}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+
+\PYG{c+c1}{//比较s1和s2开始的n个字节}
+\PYG{k+kt}{int} \PYG{n+nf}{memcmp}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s1}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{s2}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{);}
+\end{Verbatim}

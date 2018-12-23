@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{socket}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{family}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{type}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{protocol}\PYG{p}{);}
+\end{Verbatim}

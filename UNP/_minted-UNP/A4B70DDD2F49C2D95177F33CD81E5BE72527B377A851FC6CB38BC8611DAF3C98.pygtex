@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{getnameinfo}\PYG{p}{(}\PYG{k}{const} \PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{n}{addr}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{n}{addrlen}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{host}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{n}{hostlen}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{serv}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{n}{servlen}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{flags}\PYG{p}{);}
+\end{Verbatim}

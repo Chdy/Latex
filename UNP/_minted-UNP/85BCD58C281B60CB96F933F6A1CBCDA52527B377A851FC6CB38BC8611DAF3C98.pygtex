@@ -1,0 +1,82 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}/Users/dengyan/ClionProjects/Linux/linux.h\PYGZgt{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{handler}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{s}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{pid\PYGZus{}t} \PYG{n}{pid}\PYG{p}{;}
+    \PYG{k}{while} \PYG{p}{((}\PYG{n}{pid} \PYG{o}{=} \PYG{n}{waitpid}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{,} \PYG{n}{WNOHANG}\PYG{p}{))} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}child pid \PYGZpc{}d terminate \PYGZdq{}}\PYG{p}{,} \PYG{n}{pid}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{main}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{argc}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{argv}\PYG{p}{[])} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{listenfd}\PYG{p}{,} \PYG{n}{clifd}\PYG{p}{,} \PYG{n}{udpfd}\PYG{p}{,} \PYG{n}{n}\PYG{p}{;}
+    \PYG{k+kt}{socklen\PYGZus{}t} \PYG{n}{len}\PYG{p}{;}
+    \PYG{k+kt}{int} \PYG{n}{on} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{maxfd} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}in} \PYG{n}{servaddr}\PYG{p}{,} \PYG{n}{cliaddr}\PYG{p}{;}
+
+    \PYG{k}{if} \PYG{p}{((}\PYG{n}{listenfd} \PYG{o}{=} \PYG{n}{socket}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{n}{SOCK\PYGZus{}STREAM}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}socket error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{n}{bzero}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{));}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}family} \PYG{o}{=} \PYG{n}{AF\PYGZus{}INET}\PYG{p}{;}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}port} \PYG{o}{=} \PYG{n}{htons}\PYG{p}{(}\PYG{l+m+mi}{23333}\PYG{p}{);}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}addr}\PYG{p}{.}\PYG{n}{s\PYGZus{}addr} \PYG{o}{=} \PYG{n}{htonl}\PYG{p}{(}\PYG{n}{INADDR\PYGZus{}ANY}\PYG{p}{);}
+
+    \PYG{n}{signal}\PYG{p}{(}\PYG{n}{SIGCHLD}\PYG{p}{,} \PYG{n}{handler}\PYG{p}{);}
+
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{setsockopt}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{n}{SOL\PYGZus{}SOCKET}\PYG{p}{,} \PYG{n}{SO\PYGZus{}REUSEADDR}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{on}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{on}\PYG{p}{))} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}setsockopt error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{bind}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}bind error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{n}{listen}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{);}
+
+    \PYG{k}{if} \PYG{p}{((}\PYG{n}{udpfd} \PYG{o}{=} \PYG{n}{socket}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{n}{SOCK\PYGZus{}DGRAM}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}udp socket error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{bind}\PYG{p}{(}\PYG{n}{udpfd}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{))} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}bind error\PYGZdq{}}\PYG{p}{);}
+
+    \PYG{n}{maxfd} \PYG{o}{=} \PYG{n}{listenfd} \PYG{o}{\PYGZgt{}} \PYG{n}{udpfd}\PYG{o}{?}\PYG{n+nl}{listenfd}\PYG{p}{:}\PYG{n}{udpfd}\PYG{p}{;}
+    \PYG{n}{fd\PYGZus{}set} \PYG{n}{set}\PYG{p}{;}
+    \PYG{n}{FD\PYGZus{}ZERO}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{);}
+
+    \PYG{k}{for} \PYG{p}{(} \PYG{p}{;;} \PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{n}{FD\PYGZus{}SET}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{);}
+        \PYG{n}{FD\PYGZus{}SET}\PYG{p}{(}\PYG{n}{udpfd}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{);}
+
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{select}\PYG{p}{(}\PYG{n}{maxfd} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{k}{if} \PYG{p}{(}\PYG{n}{errno} \PYG{o}{==} \PYG{n}{EINTR}\PYG{p}{)}
+                \PYG{k}{continue}\PYG{p}{;}
+            \PYG{k}{else}
+                \PYG{n}{err\PYGZus{}sys}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}select error\PYGZdq{}}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{FD\PYGZus{}ISSET}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+            \PYG{k+kt}{char} \PYG{n}{name}\PYG{p}{[}\PYG{l+m+mi}{40}\PYG{p}{];}
+            \PYG{n}{len} \PYG{o}{=} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{cliaddr}\PYG{p}{);}
+            \PYG{n}{clifd} \PYG{o}{=} \PYG{n}{accept}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{cliaddr}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{len}\PYG{p}{);}
+            \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}connect from \PYGZpc{}s:\PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{inet\PYGZus{}ntop}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{cliaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}addr}\PYG{p}{,} \PYG{n}{name}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{name}\PYG{p}{)),} \PYG{n}{ntohs}\PYG{p}{(}\PYG{n}{cliaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}port}\PYG{p}{));}
+            \PYG{n}{fflush}\PYG{p}{(}\PYG{n}{stdout}\PYG{p}{);}
+
+            \PYG{k}{if} \PYG{p}{(}\PYG{n}{fork}\PYG{p}{()} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{4096}\PYG{p}{];}
+                \PYG{n}{close}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{);}
+                \PYG{k}{while} \PYG{p}{((}\PYG{n}{n} \PYG{o}{=} \PYG{n}{read}\PYG{p}{(}\PYG{n}{clifd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{)))} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                    \PYG{n}{write}\PYG{p}{(}\PYG{n}{clifd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{n}{n}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+                \PYG{n}{exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+            \PYG{p}{\PYGZcb{}}
+            \PYG{n}{close}\PYG{p}{(}\PYG{n}{clifd}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{FD\PYGZus{}ISSET}\PYG{p}{(}\PYG{n}{udpfd}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{set}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+            \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{4096}\PYG{p}{];}
+            \PYG{n}{len} \PYG{o}{=} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{cliaddr}\PYG{p}{);}
+            \PYG{n}{n} \PYG{o}{=} \PYG{n}{recvfrom}\PYG{p}{(}\PYG{n}{udpfd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{),} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{cliaddr}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{len}\PYG{p}{);}
+            \PYG{n}{sendto}\PYG{p}{(}\PYG{n}{udpfd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{n}{n}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{cliaddr}\PYG{p}{,} \PYG{n}{len}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

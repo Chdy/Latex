@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{msghdr} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{void}         \PYG{o}{*}\PYG{n}{msg\PYGZus{}name}\PYG{p}{;}       \PYG{c+cm}{/* 地址 */}
+    \PYG{k+kt}{socklen\PYGZus{}t}     \PYG{n}{msg\PYGZus{}namelen}\PYG{p}{;}    \PYG{c+cm}{/* 地址长度 */}
+    \PYG{k}{struct} \PYG{n}{iovec} \PYG{o}{*}\PYG{n}{msg\PYGZus{}iov}\PYG{p}{;}        \PYG{c+cm}{/* 用于散步读聚集写的数组 */}
+    \PYG{k+kt}{size\PYGZus{}t}        \PYG{n}{msg\PYGZus{}iovlen}\PYG{p}{;}     \PYG{c+cm}{/* 数组长度 */}
+    \PYG{k+kt}{void}         \PYG{o}{*}\PYG{n}{msg\PYGZus{}control}\PYG{p}{;}    \PYG{c+cm}{/* 指向控制信息头 */}
+    \PYG{k+kt}{size\PYGZus{}t}        \PYG{n}{msg\PYGZus{}controllen}\PYG{p}{;} \PYG{c+cm}{/* 控制信息大小 */}
+    \PYG{k+kt}{int}           \PYG{n}{msg\PYGZus{}flags}\PYG{p}{;}      \PYG{c+cm}{/* 标志 */}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

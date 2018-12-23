@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{getsockname}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{sockfd}\PYG{p}{,} \PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{n}{addr}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{o}{*}\PYG{n}{addrlen}\PYG{p}{);}
+\end{Verbatim}

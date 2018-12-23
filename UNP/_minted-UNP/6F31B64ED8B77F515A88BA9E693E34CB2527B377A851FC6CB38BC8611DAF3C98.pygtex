@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}in} \PYG{p}{\PYGZob{}}
+    \PYG{n}{\PYGZus{}\PYGZus{}uint8\PYGZus{}t}   \PYG{n}{sin\PYGZus{}len}\PYG{p}{;} \PYG{c+c1}{//通常不需要设置和检查}
+    \PYG{n}{sa\PYGZus{}family\PYGZus{}t} \PYG{n}{sin\PYGZus{}family}\PYG{p}{;} \PYG{c+c1}{//地址族(AF\PYGZus{}INET)，通常为8位的无符号整形}
+    \PYG{n}{in\PYGZus{}port\PYGZus{}t}   \PYG{n}{sin\PYGZus{}port}\PYG{p}{;} \PYG{c+c1}{//TCP或UDP端口，一般为uint16\PYGZus{}t}
+    \PYG{k}{struct} \PYG{n}{in\PYGZus{}addr} \PYG{n}{sin\PYGZus{}addr}\PYG{p}{;} \PYG{c+c1}{//IPv4地址，通常为uint32\PYGZus{}t}
+    \PYG{k+kt}{char}        \PYG{n}{sin\PYGZus{}zero}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{];} \PYG{c+c1}{//用于填充，达到最小16个字节}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

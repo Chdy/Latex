@@ -1,0 +1,84 @@
+\contentsline {section}{\numberline {1}{\color [rgb]{0.2,0.4,0.6}前言}}{5}{section.1}
+\contentsline {subsection}{\numberline {1.1}头文件}{5}{subsection.1.1}
+\contentsline {section}{\numberline {2}{\color [rgb]{0.2,0.4,0.6}函数}}{8}{section.2}
+\contentsline {subsection}{\numberline {2.1}字节序转换函数}{8}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}字节操作函数}{9}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}地址转换函数}{10}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}socket}{11}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}connect}{12}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}bind}{13}{subsection.2.6}
+\contentsline {subsection}{\numberline {2.7}listen}{14}{subsection.2.7}
+\contentsline {subsection}{\numberline {2.8}accept}{15}{subsection.2.8}
+\contentsline {subsection}{\numberline {2.9}close}{16}{subsection.2.9}
+\contentsline {subsection}{\numberline {2.10}fork}{17}{subsection.2.10}
+\contentsline {subsection}{\numberline {2.11}exec}{18}{subsection.2.11}
+\contentsline {subsection}{\numberline {2.12}getsockname}{19}{subsection.2.12}
+\contentsline {subsection}{\numberline {2.13}getpeername}{20}{subsection.2.13}
+\contentsline {subsection}{\numberline {2.14}wait}{21}{subsection.2.14}
+\contentsline {subsection}{\numberline {2.15}waitpid}{22}{subsection.2.15}
+\contentsline {subsection}{\numberline {2.16}select}{23}{subsection.2.16}
+\contentsline {paragraph}{timeout}{23}{section*.2}
+\contentsline {paragraph}{描述符集}{24}{section*.3}
+\contentsline {paragraph}{描述符就绪条件}{24}{section*.4}
+\contentsline {subparagraph}{读:}{24}{section*.5}
+\contentsline {subparagraph}{写:}{25}{section*.6}
+\contentsline {subparagraph}{异常:}{25}{section*.7}
+\contentsline {subsection}{\numberline {2.17}shutdown}{26}{subsection.2.17}
+\contentsline {paragraph}{how的取值}{26}{section*.8}
+\contentsline {subsection}{\numberline {2.18}pselect}{27}{subsection.2.18}
+\contentsline {subsection}{\numberline {2.19}poll}{28}{subsection.2.19}
+\contentsline {paragraph}{以下条件引起poll返回}{29}{section*.9}
+\contentsline {subsection}{\numberline {2.20}getsockopt}{30}{subsection.2.20}
+\contentsline {subsection}{\numberline {2.21}setsockopt}{32}{subsection.2.21}
+\contentsline {subsection}{\numberline {2.22}fcntl}{33}{subsection.2.22}
+\contentsline {subsection}{\numberline {2.23}readv}{34}{subsection.2.23}
+\contentsline {subsection}{\numberline {2.24}writev}{35}{subsection.2.24}
+\contentsline {subsection}{\numberline {2.25}recvfrom}{36}{subsection.2.25}
+\contentsline {subsection}{\numberline {2.26}sendto}{37}{subsection.2.26}
+\contentsline {subsection}{\numberline {2.27}recv}{38}{subsection.2.27}
+\contentsline {subsection}{\numberline {2.28}send}{39}{subsection.2.28}
+\contentsline {subsection}{\numberline {2.29}recvmsg}{40}{subsection.2.29}
+\contentsline {subsection}{\numberline {2.30}sendmsg}{41}{subsection.2.30}
+\contentsline {subsection}{\numberline {2.31}gethostbyname}{42}{subsection.2.31}
+\contentsline {subsection}{\numberline {2.32}gethostbyaddr}{44}{subsection.2.32}
+\contentsline {subsection}{\numberline {2.33}getservbyname}{45}{subsection.2.33}
+\contentsline {subsection}{\numberline {2.34}getservbyport}{46}{subsection.2.34}
+\contentsline {subsection}{\numberline {2.35}getaddrinfo}{47}{subsection.2.35}
+\contentsline {subsubsection}{\numberline {2.35.1}host\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax serv}{47}{subsubsection.2.35.1}
+\contentsline {subsubsection}{\numberline {2.35.2}tcp\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax connect}{48}{subsubsection.2.35.2}
+\contentsline {subsubsection}{\numberline {2.35.3}tcp\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax connect}{49}{subsubsection.2.35.3}
+\contentsline {subsection}{\numberline {2.36}gai\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax strerror}{50}{subsection.2.36}
+\contentsline {subsection}{\numberline {2.37}freeaddrinfo}{51}{subsection.2.37}
+\contentsline {subsection}{\numberline {2.38}getnameinfo}{52}{subsection.2.38}
+\contentsline {subsection}{\numberline {2.39}}{53}{subsection.2.39}
+\contentsline {section}{\numberline {3}{\color [rgb]{0.2,0.4,0.6}例子}}{54}{section.3}
+\contentsline {subsection}{\numberline {3.1}时间客户端及服务器端}{54}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}客户端}{54}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}服务器端}{54}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}使用select实现的echo服务器(TCP及UDP同时支持)}{56}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}客户端}{56}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}服务器端}{57}{subsubsection.3.2.2}
+\contentsline {subsection}{\numberline {3.3}使用getaddrinfo基于tcp实现的时间服务器}{60}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}客户端}{60}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}服务器端}{60}{subsubsection.3.3.2}
+\contentsline {subsection}{\numberline {3.4}观察TCP阻塞窗口}{62}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}客户端}{62}{subsubsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.2}服务器端}{62}{subsubsection.3.4.2}
+\contentsline {subsection}{\numberline {3.5}XX}{64}{subsection.3.5}
+\contentsline {subsubsection}{\numberline {3.5.1}客户端}{64}{subsubsection.3.5.1}
+\contentsline {subsubsection}{\numberline {3.5.2}服务器端}{64}{subsubsection.3.5.2}
+\contentsline {section}{\numberline {4}{\color [rgb]{0.2,0.4,0.6}结构体}}{65}{section.4}
+\contentsline {subsection}{\numberline {4.1}netinet/in.h}{65}{subsection.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}in\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax addr}{65}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}sockaddr\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax in}{65}{subsubsection.4.1.2}
+\contentsline {subsubsection}{\numberline {4.1.3}in6\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax addr}{65}{subsubsection.4.1.3}
+\contentsline {subsubsection}{\numberline {4.1.4}sockaddr\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax in6}{66}{subsubsection.4.1.4}
+\contentsline {subsection}{\numberline {4.2}sys/socket.h}{66}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}sockaddr}{66}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}sockaddr\relax $\@@underline {\hbox {\hspace {0.5em}}}\mathsurround \z@ $\relax storage}{66}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}iovec}{67}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}msghdr}{67}{subsubsection.4.2.4}
+\contentsline {subsection}{\numberline {4.3}netdb.h}{67}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}hostent}{67}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}servent}{67}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.3}addrinfo}{68}{subsubsection.4.3.3}

@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{fcntl}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{,} \PYG{n}{F\PYGZus{}SETOWN}\PYG{p}{,} \PYG{n}{pid}\PYG{p}{)} \PYG{c+c1}{//设置接收SIGIO的进程，不能对终端设备使用}
+\PYG{n}{fcntl}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{,} \PYG{n}{F\PYGZus{}SETFL}\PYG{p}{,} \PYG{n}{flags}\PYG{o}{|}\PYG{n}{O\PYGZus{}ASYNC}\PYG{p}{)} \PYG{c+c1}{//设置信号IO}
+\end{Verbatim}

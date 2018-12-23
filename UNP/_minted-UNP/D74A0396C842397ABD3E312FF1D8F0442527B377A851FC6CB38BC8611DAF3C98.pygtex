@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{hostent} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{char}  \PYG{o}{*}\PYG{n}{h\PYGZus{}name}\PYG{p}{;}            \PYG{c+cm}{/* 正式主机名 */}
+    \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{h\PYGZus{}aliases}\PYG{p}{;}         \PYG{c+cm}{/* 别名列表 */}
+    \PYG{k+kt}{int}    \PYG{n}{h\PYGZus{}addrtype}\PYG{p}{;}        \PYG{c+cm}{/* 主机地址类型: AF\PYGZus{}INET */}
+    \PYG{k+kt}{int}    \PYG{n}{h\PYGZus{}length}\PYG{p}{;}          \PYG{c+cm}{/* 地址长度: 4 */}
+    \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{h\PYGZus{}addr\PYGZus{}list}\PYG{p}{;}       \PYG{c+cm}{/* 其中的每个指针指向in\PYGZus{}addr结构体 */}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

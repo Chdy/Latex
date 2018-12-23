@@ -1,0 +1,35 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{tcp\PYGZus{}listen}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{host}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{serv}\PYG{p}{,} \PYG{k+kt}{socklen\PYGZus{}t} \PYG{o}{*} \PYG{n}{addrlenp}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{listenfd}\PYG{p}{,} \PYG{n}{n}\PYG{p}{;}
+    \PYG{k}{const} \PYG{k+kt}{int} \PYG{n}{on} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{addrinfo} \PYG{n}{hints}\PYG{p}{,} \PYG{o}{*}\PYG{n}{res}\PYG{p}{,} \PYG{o}{*}\PYG{n}{ressave}\PYG{p}{;}
+
+    \PYG{n}{bzero}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{hints}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{addrinfo}\PYG{p}{));}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}flags} \PYG{o}{=} \PYG{n}{AI\PYGZus{}PASSIVE}\PYG{p}{;}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}family} \PYG{o}{=} \PYG{n}{AF\PYGZus{}UNSPEC}\PYG{p}{;}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}socktype} \PYG{o}{=} \PYG{n}{SOCK\PYGZus{}STREAM}\PYG{p}{;}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}flags} \PYG{o}{=} \PYG{n}{AI\PYGZus{}NUMERICSERV}\PYG{p}{;}
+
+    \PYG{k}{if} \PYG{p}{((}\PYG{n}{n} \PYG{o}{=} \PYG{n}{getaddrinfo}\PYG{p}{(}\PYG{n}{host}\PYG{p}{,} \PYG{n}{serv}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{hints}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{res}\PYG{p}{))} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}quit}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}tcp\PYGZus{}listen error for \PYGZpc{}s, \PYGZpc{}s:\PYGZpc{}s\PYGZdq{}}\PYG{p}{,} \PYG{n}{host}\PYG{p}{,} \PYG{n}{serv}\PYG{p}{,} \PYG{n}{gai\PYGZus{}strerror}\PYG{p}{(}\PYG{n}{n}\PYG{p}{));}
+    \PYG{n}{ressave} \PYG{o}{=} \PYG{n}{res}\PYG{p}{;}
+    \PYG{k}{do} \PYG{p}{\PYGZob{}}
+        \PYG{n}{listenfd} \PYG{o}{=} \PYG{n}{socket}\PYG{p}{(}\PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}family}\PYG{p}{,} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}socktype}\PYG{p}{,} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}protocol}\PYG{p}{);}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{listenfd} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+            \PYG{k}{continue}\PYG{p}{;}
+
+        \PYG{n}{setsockopt}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{n}{SOL\PYGZus{}SOCKET}\PYG{p}{,} \PYG{n}{SO\PYGZus{}REUSEADDR}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{on}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{on}\PYG{p}{));}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{bind}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}addr}\PYG{p}{,} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}addrlen}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+            \PYG{k}{break}\PYG{p}{;}
+
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}} \PYG{k}{while} \PYG{p}{((}\PYG{n}{res} \PYG{o}{=} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}next}\PYG{p}{)} \PYG{o}{!=} \PYG{n+nb}{NULL}\PYG{p}{);}
+
+    \PYG{n}{listen}\PYG{p}{(}\PYG{n}{listenfd}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{);}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{addrlenp}\PYG{p}{)}
+        \PYG{o}{*}\PYG{n}{addrlenp} \PYG{o}{=} \PYG{n}{res}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{ai\PYGZus{}addrlen}\PYG{p}{;}
+
+    \PYG{k}{return} \PYG{n}{listenfd}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

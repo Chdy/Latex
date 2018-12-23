@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{pollfd} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int}   \PYG{n}{fd}\PYG{p}{;}         \PYG{c+cm}{/* file descriptor */}
+    \PYG{k+kt}{short} \PYG{n}{events}\PYG{p}{;}     \PYG{c+cm}{/* requested events */}
+    \PYG{k+kt}{short} \PYG{n}{revents}\PYG{p}{;}    \PYG{c+cm}{/* returned events */}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

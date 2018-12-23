@@ -1,0 +1,29 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} include \PYGZlt{}/Users/dengyan/ClionProjects/Linux/linux.h\PYGZgt{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{main}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{argc}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{argv}\PYG{p}{[])} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{fd}\PYG{p}{,} \PYG{n}{n}\PYG{p}{;}
+    \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{n}{MAXLINE}\PYG{p}{];}
+    \PYG{k}{struct} \PYG{n}{sockaddr\PYGZus{}in} \PYG{n}{servaddr}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{tcp\PYGZus{}connection\PYGZus{}info} \PYG{n}{tcpinfo}\PYG{p}{;}
+    \PYG{k+kt}{int} \PYG{n}{len} \PYG{o}{=} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{tcpinfo}\PYG{p}{);}
+    \PYG{n}{fd} \PYG{o}{=} \PYG{n}{socket}\PYG{p}{(}\PYG{n}{AF\PYGZus{}INET}\PYG{p}{,} \PYG{n}{SOCK\PYGZus{}STREAM}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{);}
+
+    \PYG{k+kt}{int} \PYG{n}{sfd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}/dev/zero\PYGZdq{}}\PYG{p}{,} \PYG{n}{O\PYGZus{}RDONLY}\PYG{p}{);}
+    \PYG{n}{read}\PYG{p}{(}\PYG{n}{sfd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{l+m+mi}{1000}\PYG{p}{);}
+
+    \PYG{n}{bzero}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{));}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}port} \PYG{o}{=} \PYG{n}{htons}\PYG{p}{(}\PYG{l+m+mi}{23333}\PYG{p}{);}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}family} \PYG{o}{=} \PYG{n}{AF\PYGZus{}INET}\PYG{p}{;}
+    \PYG{n}{servaddr}\PYG{p}{.}\PYG{n}{sin\PYGZus{}addr}\PYG{p}{.}\PYG{n}{s\PYGZus{}addr} \PYG{o}{=} \PYG{n}{htonl}\PYG{p}{(}\PYG{n}{INADDR\PYGZus{}LOOPBACK}\PYG{p}{);}
+
+    \PYG{n}{connect}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{servaddr}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{servaddr}\PYG{p}{));}
+    \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}接收窗口 发送窗口 发送阻塞窗口}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+    \PYG{k}{while} \PYG{p}{(}\PYG{n}{write}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{l+m+mi}{1000}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{p}{\PYGZob{}}
+        \PYG{n}{getsockopt}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{,} \PYG{n}{IPPROTO\PYGZus{}TCP}\PYG{p}{,} \PYG{n}{TCP\PYGZus{}CONNECTION\PYGZus{}INFO}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{tcpinfo}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{len}\PYG{p}{);}
+        \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZpc{}d \PYGZpc{}d \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{tcpinfo}\PYG{p}{.}\PYG{n}{tcpi\PYGZus{}rcv\PYGZus{}wnd}\PYG{p}{,} \PYG{n}{tcpinfo}\PYG{p}{.}\PYG{n}{tcpi\PYGZus{}snd\PYGZus{}wnd}\PYG{p}{,} \PYG{n}{tcpinfo}\PYG{p}{.}\PYG{n}{tcpi\PYGZus{}snd\PYGZus{}cwnd}\PYG{p}{);}
+        \PYG{n}{sleep}\PYG{p}{(}\PYG{l+m+mf}{0.2}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

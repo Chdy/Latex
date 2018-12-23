@@ -1,0 +1,86 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{minted}
+\usepackage{fancyhdr}
+\usepackage[left=0.8in,right=0.8in,top=1in,bottom=0.9in]{geometry}
+%\usepackage[total={6.5in,8.75in},
+%top=1.2in, left=0.9in, includefoot]{geometry}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{graphicx} %插入图片
+\usepackage{amsmath} %数学公式处理 align环境
+\usepackage{setspace} %行间距
+\usepackage{lmodern} %下行的使用需要这行
+\usepackage[T1]{fontenc} %用于处理下划线等输出
+\usepackage{textcomp} %\textasciitilde中划线 \textunderscore下划线
+\usepackage{array} %使用表格的p{2cm}<{\centering}需要
+\renewcommand\arraystretch{1.5} %设置表格的高度为1.5倍
+\usepackage[pdfstartview=FitH,
+CJKbookmarks=true,
+bookmarksnumbered=true,
+bookmarksopen=true,
+colorlinks,
+pdfborder=001,
+linkcolor=blue,
+anchorcolor=blue,
+citecolor=blue,
+]{hyperref} %实现目录和章节的超链接
+\hypersetup{hidelinks}
+
+\usepackage{chngpage} %使用adjustwidth环境偏移整个块 
+\usepackage{cite} %引用bib中的文献
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[RO,LE]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+%页眉横线宽度
+
+\newcommand{\li}{\underline{\hspace{0.5em}}} %用于输出下划线
+%\setboolean{@twoside}{true} %从oneside转换为twoside，这样才能有单数页和双数页码
+
+
+\begin{document}
+\title{Unix Socket Programming}
+\author{邓岩\footnote{www.dengyan.net} \\ 837123564@qq.com}
+\date{\today}
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\setminted[c]{
+			   breaklines,
+			   %breakbefore= ,
+			   %breakanywhere，
+               linenos, %行号
+               numbersep=10pt, %行号与代码距离
+               autogobble, %去掉前两列
+               %frame=lines, %边缘线
+               framesep=5pt, %代码与框架距离
+               %以下选项需要加在环境选项中才有效
+               xleftmargin=2em,
+			   %xrightmargin=0em,
+			   %mathescape,
+			   breakbefore= ,
+}
+
+\section{{\color[rgb]{0.2,0.4,0.6}前言}}
+\input{section/header}
+\newpage
+
+\section{{\color[rgb]{0.2,0.4,0.6}函数}}
+\input{section/function}
+\newpage
+
+\section{{\color[rgb]{0.2,0.4,0.6}例子}}
+\input{section/instance}
+\newpage
+
+\section{{\color[rgb]{0.2,0.4,0.6}结构体}}
+\input{section/lib}
+\end{document}

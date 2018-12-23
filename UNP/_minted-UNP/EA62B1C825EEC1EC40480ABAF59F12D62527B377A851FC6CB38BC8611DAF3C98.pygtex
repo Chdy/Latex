@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{iovec} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{void}  \PYG{o}{*}\PYG{n}{iov\PYGZus{}base}\PYG{p}{;}    \PYG{c+cm}{/* 缓冲区地址 */}
+    \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{iov\PYGZus{}len}\PYG{p}{;}     \PYG{c+cm}{/* 缓冲区有效数据长度 */}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

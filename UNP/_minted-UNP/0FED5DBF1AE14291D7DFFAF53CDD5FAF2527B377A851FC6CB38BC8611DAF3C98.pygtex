@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{addrinfo} \PYG{o}{*} \PYG{n+nf}{host\PYGZus{}serv}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{host}\PYG{p}{,} \PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*} \PYG{n}{serv}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{family}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{socktype}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+    \PYG{k}{struct} \PYG{n}{addrinfo} \PYG{n}{hints}\PYG{p}{,} \PYG{o}{*}\PYG{n}{res}\PYG{p}{;}
+
+    \PYG{n}{bzero}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{hints}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{addrinfo}\PYG{p}{));}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}flags} \PYG{o}{=} \PYG{n}{AI\PYGZus{}CANONNAME}\PYG{p}{;}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}family} \PYG{o}{=} \PYG{n}{family}\PYG{p}{;}
+    \PYG{n}{hints}\PYG{p}{.}\PYG{n}{ai\PYGZus{}socktype} \PYG{o}{=} \PYG{n}{socktype}\PYG{p}{;}
+
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{getaddrinfo}\PYG{p}{(}\PYG{n}{host}\PYG{p}{,} \PYG{n}{serv}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{hints}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{res}\PYG{p}{)} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{k}{return}  \PYG{n+nb}{NULL}\PYG{p}{;}
+    \PYG{k}{return} \PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

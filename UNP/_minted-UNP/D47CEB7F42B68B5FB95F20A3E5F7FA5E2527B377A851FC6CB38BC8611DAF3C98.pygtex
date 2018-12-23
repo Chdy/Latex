@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{in\PYGZus{}addr} \PYG{p}{\PYGZob{}}
+    \PYG{n}{in\PYGZus{}addr\PYGZus{}t} \PYG{n}{s\PYGZus{}addr}\PYG{p}{;} \PYG{c+c1}{//IPv4地址，通常为uint32\PYGZus{}t}
+\PYG{p}{\PYGZcb{};}
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * 需要注意的是，对32位IPv4地址进行访问时有两种不同的访问方法}
+\PYG{c+cm}{ * 一种是访问结构体，另一种是访问结构体中的成员}
+\PYG{c+cm}{ * 在当中参数时需要小心处理，因为编译器处理结构体和}
+\PYG{c+cm}{ * 无符号整形采用不同的方式，结构体作为左值时无法随意赋值}
+\PYG{c+cm}{ * 所以如果想直接对地址赋值需要访问结构体中的成员}
+\PYG{c+cm}{ */}
+\end{Verbatim}

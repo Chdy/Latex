@@ -1,0 +1,22 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{addrinfo} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int}              \PYG{n}{ai\PYGZus{}flags}\PYG{p}{;} \PYG{c+cm}{/* 控制返回信息 */}
+    \PYG{k+kt}{int}              \PYG{n}{ai\PYGZus{}family}\PYG{p}{;} \PYG{c+cm}{/* AF\PYGZus{}INET|AF\PYGZus{}INET6|AF\PYGZus{}UNSPEC 意义为获取哪种地址结构 */}
+    \PYG{k+kt}{int}              \PYG{n}{ai\PYGZus{}socktype}\PYG{p}{;} \PYG{c+cm}{/* SOCK\PYGZus{}XXX */}
+    \PYG{k+kt}{int}              \PYG{n}{ai\PYGZus{}protocol}\PYG{p}{;} \PYG{c+cm}{/* 一般为0 */}
+    \PYG{k+kt}{socklen\PYGZus{}t}        \PYG{n}{ai\PYGZus{}addrlen}\PYG{p}{;} \PYG{c+cm}{/* ai\PYGZus{}addr长度 */}
+    \PYG{k}{struct} \PYG{n}{sockaddr} \PYG{o}{*}\PYG{n}{ai\PYGZus{}addr}\PYG{p}{;} \PYG{c+cm}{/* 存放地址信息 */}
+    \PYG{k+kt}{char}            \PYG{o}{*}\PYG{n}{ai\PYGZus{}canonname}\PYG{p}{;}
+    \PYG{k}{struct} \PYG{n}{addrinfo} \PYG{o}{*}\PYG{n}{ai\PYGZus{}next}\PYG{p}{;} \PYG{c+cm}{/* 指向链表上的下一个addrinfo */}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{c+cm}{/* \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}ai\PYGZus{}flags\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+cm}{ * AI\PYGZus{}PASSIVE 套接字将用于被动打开(服务器端)}
+\PYG{c+cm}{ * AI\PYGZus{}CANONNAME 告知getaddrinfo返回主机的规范名字}
+\PYG{c+cm}{ * AI\PYGZus{}V4MAPPED 如果ai\PYGZus{}family指定的是IPv6，那么如果没有可用的AAAA记录，则返回一条IPv4映射的IPv6地址)}
+\PYG{c+cm}{ * AI\PYGZus{}ADDRCONFIG表示按照主机配置配置选择返回的地址类型}
+\PYG{c+cm}{ * AI\PYGZus{}ALL表示查找IPv4和IPv6(IPv6需要指定AI\PYGZus{}V4MAPPED后还会返回IPv4映射的IPv6地址)}
+\PYG{c+cm}{ * AI\PYGZus{}NUMERICHOST表示以数字格式指定主机地址}
+\PYG{c+cm}{ * AI\PYGZus{}NUMERICSERV表示以数字形式(端口号)指定服务}
+\PYG{c+cm}{ */}
+\end{Verbatim}

@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/* 三个相关函数 */}
+\PYG{k}{struct} \PYG{n}{servent} \PYG{o}{*}\PYG{n+nf}{getservent}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{);} \PYG{c+c1}{//获取文件下一条目}
+\PYG{k+kt}{void} \PYG{n+nf}{setservent}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{stayopen}\PYG{p}{);} \PYG{c+c1}{//打开端口绑定的服务名和端口号信息文件，mac上即/etc/services文件}
+\PYG{k+kt}{void} \PYG{n+nf}{endservent}\PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{);} \PYG{c+c1}{//关闭文件}
+\end{Verbatim}

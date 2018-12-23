@@ -1,0 +1,359 @@
+\subsection{时间客户端及服务器端}
+\subsubsection{客户端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    int sockfd, n;
+    char buf[4097];
+    struct sockaddr_in servaddr;
+
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+        err_sys("socket error");
+
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(13333);
+    if (inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr) == -1)
+        err_quit("inet_pton error");
+
+    if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+        err_sys("connect error");
+
+    while ((n = read(sockfd, buf, 4096)) > 0) {
+        write(STDOUT_FILENO, buf, n);
+    }
+    return 0;
+}
+\end{minted}
+\subsubsection{服务器端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    int sockfd, n, fd;
+    struct sockaddr_in servaddr;
+
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        exit(-1);
+
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_port = htons(13333);
+    servaddr.sin_family = AF_INET;
+    if (inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr) <= 0)
+        exit(-1);
+
+    if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0) {
+        exit(-1);
+    }
+
+    listen(sockfd, 5);
+
+    while (1) {
+        if ((fd = accept(sockfd, NULL, NULL)) < 0) {
+            printf("%s", strerror(errno));
+            continue;
+        }
+        time_t t = time(NULL);
+        char * str = ctime(&t);
+        write(fd, str, strlen(str));
+        close(fd);
+    }
+
+}
+\end{minted}
+\newpage
+
+\subsection{使用select实现的echo服务器(TCP及UDP同时支持)}
+\subsubsection{客户端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    char buf[4096];
+    int tcpfd, udpfd, len, choose, n;
+    struct sockaddr_in servaddr, cliaddr;
+
+    if ((tcpfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        err_sys("tcp socket error");
+
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(23333);
+    servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+    if ((udpfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+        err_sys("udp socket error");
+
+    if (connect(tcpfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+        err_sys("connect error");
+
+
+    connect(udpfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
+
+    for (;;) {
+        printf("1: TCP echo\n");
+        printf("2: UDP echo\n");
+
+        scanf("%d", &choose);
+        switch (choose) {
+            case 1:
+                n = read(STDIN_FILENO, buf, 4096);
+                write(tcpfd, buf, n);
+                n = read(tcpfd, buf, n);
+                write(STDOUT_FILENO, buf, n);
+                break;
+            case 2:
+                n = read(STDIN_FILENO, buf, 4096);
+                write(udpfd, buf, n);
+                n = read(udpfd, buf, n);
+                write(STDOUT_FILENO, buf, n);
+                break;
+            default:
+                break;
+        }
+    }
+
+    return 0;
+}
+\end{minted}
+
+\subsubsection{服务器端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+void handler(int s)
+{
+    pid_t pid;
+    while ((pid = waitpid(-1, NULL, WNOHANG)) > 0)
+        printf("child pid %d terminate ", pid);
+}
+
+int main(int argc, char *argv[]) {
+    int listenfd, clifd, udpfd, n;
+    socklen_t len;
+    int on = 1, maxfd = -1;
+    struct sockaddr_in servaddr, cliaddr;
+
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        err_quit("socket error");
+
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(23333);
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    signal(SIGCHLD, handler);
+    
+    if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1)
+        err_quit("setsockopt error");
+    
+    if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+        err_quit("bind error");
+
+    listen(listenfd, 5);
+
+    if ((udpfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+        err_quit("udp socket error");
+
+    if (bind(udpfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+        err_quit("bind error");
+
+    maxfd = listenfd > udpfd?listenfd:udpfd;
+    fd_set set;
+    FD_ZERO(&set);
+
+    for ( ;; ) {
+        FD_SET(listenfd, &set);
+        FD_SET(udpfd, &set);
+
+        if (select(maxfd + 1, &set, NULL, NULL, NULL) < 0) {
+            if (errno == EINTR)
+                continue;
+            else
+                err_sys("select error");
+        }
+
+        if (FD_ISSET(listenfd, &set)) {
+            char name[40];
+            len = sizeof(cliaddr);
+            clifd = accept(listenfd, (struct sockaddr *)&cliaddr, &len);
+            printf("connect from %s:%d\n", inet_ntop(AF_INET, &cliaddr.sin_addr, name, sizeof(name)), ntohs(cliaddr.sin_port));
+            fflush(stdout);
+
+            if (fork() == 0) {
+                char buf[4096];
+                close(listenfd);
+                while ((n = read(clifd, buf, sizeof(buf))) > 0) {
+                    write(clifd, buf, n);
+                }
+                exit(-1);
+            }
+            close(clifd);
+        }
+
+        if (FD_ISSET(udpfd, &set)) {
+            char buf[4096];
+            len = sizeof(cliaddr);
+            n = recvfrom(udpfd, buf, sizeof(buf), 0, (struct sockaddr *)&cliaddr, &len);
+            sendto(udpfd, buf, n, 0, (struct sockaddr *)&cliaddr, len);
+        }
+    }
+}
+\end{minted}
+\newpage
+
+\subsection{使用getaddrinfo基于tcp实现的时间服务器}
+\subsubsection{客户端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    int sockfd, n;
+    char buf[100];
+    char recvline[MAXLINE + 1];
+    socklen_t len;
+    struct sockaddr_storage ss;
+
+    sockfd = tcp_connect("localhost", "13333");
+    len = sizeof(ss);
+    getpeername(sockfd, (struct sockaddr *)&ss, &len);
+    printf("connected to %s\n", len==16?inet_ntop(AF_INET, &((struct sockaddr_in *)&ss)->sin_addr, buf, 100):inet_ntop(AF_INET6, &((struct sockaddr_in *)&ss)->sin_addr, buf, 100));
+
+    while ((n = read(sockfd, recvline, MAXLINE)) > 0) {
+        write(STDOUT_FILENO, recvline, n);
+    }
+    return 0;
+}
+\end{minted}
+
+\subsubsection{服务器端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    int listenfd, connfd;
+    socklen_t len;
+    char buf[MAXLINE];
+    time_t t;
+    struct sockaddr_storage cliaddr;
+
+    listenfd = tcp_listen(NULL, "13333", NULL);
+
+    for ( ;; ) {
+        len = sizeof(cliaddr);
+        connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &len);
+        printf("connected to %s\n", len==16?inet_ntop(AF_INET, &((struct sockaddr_in *)&cliaddr)->sin_addr, buf, 100):inet_ntop(AF_INET6, &((struct sockaddr_in *)&cliaddr)->sin_addr, buf, 100));
+
+        t = time(NULL);
+        char * s = ctime(&t);
+        write(connfd, s, strlen(s));
+        close(connfd);
+    }
+    return 0;
+}
+\end{minted}
+\newpage
+
+\subsection{观察TCP阻塞窗口}
+\subsubsection{客户端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    int fd, n;
+    char buf[MAXLINE];
+    struct sockaddr_in servaddr;
+    struct tcp_connection_info tcpinfo;
+    int len = sizeof(tcpinfo);
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+
+    int sfd = open("/dev/zero", O_RDONLY);
+    read(sfd, buf, 1000);
+
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_port = htons(23333);
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+    connect(fd, &servaddr, sizeof(servaddr));
+    printf("接收窗口 发送窗口 发送阻塞窗口\n");
+    while (write(fd, buf, 1000) > 0)
+    {
+        getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpinfo, &len);
+        printf("%d %d %d\n", tcpinfo.tcpi_rcv_wnd, tcpinfo.tcpi_snd_wnd, tcpinfo.tcpi_snd_cwnd);
+        sleep(0.2);
+    }
+}
+\end{minted}
+
+\subsubsection{服务器端}
+\begin{minted}{c}
+# include </Users/dengyan/ClionProjects/Linux/linux.h>
+
+int main(int argc, char *argv[]) {
+    setbuf(stdout, NULL);
+    int listenfd, n = 4;
+    int rcv = 0;
+    char buf[MAXLINE];
+    struct tcp_connection_info tcpinfo;
+    int len = sizeof(tcpinfo);
+
+    struct addrinfo hints, *res, *ressave;
+
+    bzero(&hints, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE|AI_NUMERICSERV;
+
+    if (getaddrinfo(NULL, "23333", &hints, &res) != 0)
+        err_quit("getaddrinfo error");
+
+    ressave = res;
+    do {
+        listenfd = socket(AF_INET, SOCK_STREAM, 0);
+
+        setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(int));
+
+        if (bind(listenfd, res->ai_addr, res->ai_addrlen) == 0)
+            break;
+
+        close(listenfd);
+    } while ((res = res->ai_next) != NULL);
+
+    if (res == NULL)
+        err_quit("don't find the socket to bind");
+
+    freeaddrinfo(ressave);
+
+    getsockopt(listenfd, SOL_SOCKET, SO_RCVBUF, &rcv, &n);
+    printf("rcvbuf = %d\n", rcv);
+    rcv = 262000;
+    setsockopt(listenfd, SOL_SOCKET, SO_RCVBUF, &rcv, n);
+    printf("rcvbuf = %d\n", rcv);
+    listen(listenfd, 5);
+
+    int fd = accept(listenfd, NULL, 0);
+    printf("接收窗口 发送窗口 发送阻塞窗口\n");
+
+    for (;;) {
+        getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpinfo, &len);
+        printf("%d %d %d\n", tcpinfo.tcpi_rcv_wnd, tcpinfo.tcpi_snd_wnd, tcpinfo.tcpi_snd_cwnd);
+        sleep(1);
+    }
+    return 0;
+}
+\end{minted}
+
+\subsection{XX}
+\subsubsection{客户端}
+\begin{minted}{c}
+
+\end{minted}
+
+\subsubsection{服务器端}
+\begin{minted}{c}
+
+\end{minted}
+
+
